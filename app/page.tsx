@@ -113,41 +113,44 @@ const TRANSLATIONS = {
   }
 }
 
+// ==============================================
+// ⭐ 데이터 섹션 (영어/베트남어 모두 포함)
+// ==============================================
 const TRENDS_DATA = [
-  { 
-    id: 1, 
-    title: "Retinol Ampoule", 
-    tag: "#Anti-aging", 
-    image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=800&auto=format&fit=crop" 
+  {
+    id: 1,
+    title: "Retinol Ampoule",
+    tag: "#Anti-aging",
+    // ▼ 외부 링크 대신, public/images 폴더 안의 파일을 가리킵니다.
+    // (주의: 실제 파일명이 trend1.jpg와 정확히 일치해야 합니다!)
+    image: "/images/trend1.jpg",
   },
-  { 
-    id: 2, 
-    title: "Cica Cooling Pad", 
-    tag: "#Calming", 
-    // ✅ 이미지를 새롭고 시원한 패드 사진으로 교체했습니다!
-    image: "https://images.unsplash.com/photo-1628088326988-734463392c26?q=80&w=800&auto=format&fit=crop" 
+  {
+    id: 2,
+    title: "Cica Cooling Pad",
+    tag: "#Calming",
+    image: "/images/trend2.jpg",
   },
-  { 
-    id: 3, 
-    title: "Glass Water Tint", 
-    tag: "#Glow", 
-    image: "https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=800&auto=format&fit=crop" 
+  {
+    id: 3,
+    title: "Glass Water Tint",
+    tag: "#Glow",
+    image: "/images/trend3.jpg",
   },
-  { 
-    id: 4, 
-    title: "Silk Hydrator", 
-    tag: "#Moisture", 
-    image: "https://images.unsplash.com/photo-1629198688000-71f23e745b6e?q=80&w=800&auto=format&fit=crop" 
+  {
+    id: 4,
+    title: "Silk Hydrator",
+    tag: "#Moisture",
+    image: "/images/trend4.jpg",
   },
-  { 
-    id: 5, 
-    title: "Radiance Oil", 
-    tag: "#Brightening", 
-    // ✅ 이미지를 윤기 나는 고급스러운 오일 사진으로 교체했습니다!
-    image: "https://images.unsplash.com/photo-1608248597279-f99d160bfbc8?q=80&w=800&auto=format&fit=crop" 
+  {
+    id: 5,
+    title: "Radiance Oil",
+    tag: "#Brightening",
+    image: "/images/trend5.jpg",
   },
 ]
-// ... (나머지 코드는 그대로 두시면 됩니다)
+// ... (이 아래 코드는 그대로 두시면 됩니다)
 
 const FACILITIES_DATA = [
   {
