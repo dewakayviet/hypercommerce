@@ -1,5 +1,9 @@
 "use client"
+// app/page.tsx 파일 맨 꼭대기
 
+import Image from "next/image"; // 👈 이 줄을 꼭 추가해주세요!
+import Link from "next/link";
+// ... 나머지 import 들 ...
 import { useState, useEffect, useRef } from "react"
 import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Smartphone, Loader2, Factory, FlaskConical, Plane, Hexagon, Quote, Globe } from "lucide-react"
 
@@ -272,14 +276,25 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-primary-foreground font-sans">
       
       {/* 헤더 */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isScrolled ? "bg-background/90 backdrop-blur-md border-white/10 py-4 shadow-lg" : "bg-transparent border-transparent py-6"}`}>
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <Hexagon className="w-8 h-8 text-primary fill-primary/20" />
-            <div className="text-2xl font-bold tracking-tighter">
-              <span className="text-primary">HYPER</span><span className="text-white">COMMERCE</span>
-            </div>
-          </div>
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+  
+  {/* ▼▼▼▼▼ 수정된 로고 부분 (시작) ▼▼▼▼▼ */}
+  <div 
+    className="flex items-center cursor-pointer" 
+    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+  >
+    <Image
+      src="/images/logo.png"   // ⭐ public/images 폴더에 넣은 파일명과 똑같이!
+      alt="Hyper Commerce Logo"
+      width={180}              // ⭐ 로고 크기에 맞춰서 숫자 조절 (가로)
+      height={50}              // ⭐ 로고 크기에 맞춰서 숫자 조절 (세로)
+      priority                 // 로고는 중요하니까 빨리 로딩하라는 뜻
+      className="object-contain" // 비율 깨지지 않게 유지
+    />
+  </div>
+  {/* ▲▲▲▲▲ 수정된 로고 부분 (끝) ▲▲▲▲▲ */}
+
+{/* ... 아래쪽 메뉴 버튼 코드는 그대로 ... */}
           
           <nav className="hidden md:flex gap-8 items-center font-medium text-base">
             <button onClick={() => scrollToSection('trends')} className="hover:text-primary transition-colors uppercase tracking-wide">{t.nav.trends}</button>
