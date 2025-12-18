@@ -336,6 +336,7 @@ export default function Home() {
              <button className="text-white p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>{isMobileMenuOpen ? <X /> : <Menu />}</button>
           </div>
         </div>
+        </div>
       </header>
 
       {/* 모바일 메뉴 (전체화면) */}
