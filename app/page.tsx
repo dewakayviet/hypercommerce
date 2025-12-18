@@ -5,7 +5,7 @@ import Image from "next/image"; // 👈 이 줄을 꼭 추가해주세요!
 import Link from "next/link";
 // ... 나머지 import 들 ...
 import { useState, useEffect, useRef } from "react"
-import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Smartphone, Loader2, Factory, FlaskConical, Plane, Hexagon, Quote, Globe } from "lucide-react"
+import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Smartphone, Loader2, Factory, FlaskConical, Plane, Quote, Globe } from "lucide-react"
 
 // ==============================================
 // 🗣️ 언어별 텍스트 팩 (번역 데이터)
