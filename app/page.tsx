@@ -2,10 +2,9 @@
 
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
-// 필요한 아이콘들
-import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2, GitGraph, Factory, Plane } from "lucide-react";
+import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2 } from "lucide-react";
 
-// 트렌드 데이터 (영어 원문)
+// 트렌드 데이터
 const TRENDS_DATA = [
   { id: 1, title: "Retinol Ampoule", tag: "#Anti-aging", image: "/images/trend1.jpg" },
   { id: 2, title: "Cica Cooling Pad", tag: "#Calming", image: "/images/trend2.jpg" },
@@ -18,8 +17,9 @@ export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeTrend, setActiveTrend] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [currentLang, setCurrentLang] = useState('en');
   
-  // 모달 상태 관리
+  // 모달 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,27 +27,40 @@ export default function Home() {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // 구글 번역기 스크립트 로드
+  // 1. 구글 번역 스크립트 로드 (영어, 베트남어만 설정)
   useEffect(() => {
     const addScript = document.createElement('script');
     addScript.setAttribute('src', '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
     document.body.appendChild(addScript);
 
-    // 구글 번역 초기화 함수 전역 설정
     (window as any).googleTranslateElementInit = () => {
       new (window as any).google.translate.TranslateElement({
-        pageLanguage: 'en', // 기본 언어: 영어
-        layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE, // 심플한 디자인
+        pageLanguage: 'en',
+        includedLanguages: 'en,vi', // ⭐ 딱 영어와 베트남어만 로드합니다!
+        layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false,
       }, 'google_translate_element');
     };
   }, []);
 
+  // 2. 스크롤 감지
   useEffect(() => {
     const handleScroll = () => { setIsScrolled(window.scrollY > 50); };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // 3. 언어 변경 함수 (예쁜 버튼과 구글 번역기 연결)
+  const handleLanguageChange = (lang: string) => {
+    setCurrentLang(lang);
+    
+    // 숨겨진 구글 번역기 콤보박스를 찾아서 강제로 변경
+    const googleCombo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (googleCombo) {
+      googleCombo.value = lang;
+      googleCombo.dispatchEvent(new Event('change'));
+    }
+  };
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -78,40 +91,60 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-primary-foreground font-sans">
       
+      {/* ⭐ 구글 번역기 스타일 숨김 처리 (중요!) */}
+      <style jsx global>{`
+        #google_translate_element { display: none !important; }
+        .goog-te-banner-frame { display: none !important; }
+        body { top: 0 !important; }
+        .goog-tooltip { display: none !important; }
+        .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+      `}</style>
+
+      {/* 숨겨진 구글 번역 요소 (기능만 작동) */}
+      <div id="google_translate_element"></div>
+
       {/* 헤더 */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isScrolled ? "bg-background/90 backdrop-blur-md border-white/10 py-4 shadow-lg" : "bg-transparent border-transparent py-6"}`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           
-          {/* 로고 */}
           <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <Image src="/images/logo.png" alt="HYPER COMMERCE" width={200} height={60} priority className="object-contain" />
           </div>
 
-          {/* 데스크탑 메뉴 (영어 원문) */}
           <nav className="hidden md:flex items-center gap-8">
             <button onClick={() => scrollToSection('trends')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">TRENDS</button>
             <button onClick={() => scrollToSection('why-us')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">WHY US</button>
             <button onClick={() => scrollToSection('success-story')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">SUCCESS STORIES</button>
           </nav>
 
-          {/* 데스크탑 액션 버튼 & 구글 번역기 위치 */}
           <div className="hidden md:flex items-center gap-6">
-            
-            {/* ⭐ 구글 번역기 위젯이 여기에 생깁니다 ⭐ */}
-            <div id="google_translate_element" className="google-translate-container"></div>
+            {/* ⭐ 예쁜 언어 선택 버튼 복구! */}
+            <div className="flex items-center gap-2 bg-white/5 rounded-full p-1 border border-white/10">
+              <button 
+                onClick={() => handleLanguageChange('en')}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${currentLang === 'en' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
+              >
+                EN
+              </button>
+              <button 
+                onClick={() => handleLanguageChange('vi')}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${currentLang === 'vi' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
+              >
+                VN
+              </button>
+            </div>
 
-            <button 
-              onClick={() => setIsModalOpen(true)}
-              className="group bg-primary hover:bg-primary/90 text-black px-6 py-2.5 rounded-full font-bold transition-all flex items-center gap-2 text-sm"
-            >
+            <button onClick={() => setIsModalOpen(true)} className="group bg-primary hover:bg-primary/90 text-black px-6 py-2.5 rounded-full font-bold transition-all flex items-center gap-2 text-sm">
               Start Project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
 
-          {/* 모바일 헤더 */}
           <div className="md:hidden flex items-center gap-4">
-             {/* 모바일에서도 번역기 노출 */}
-             <div id="google_translate_element_mobile"></div> 
+             <div className="flex items-center gap-1">
+               <button onClick={() => handleLanguageChange('en')} className={`text-xs font-bold ${currentLang === 'en' ? 'text-primary' : 'text-gray-500'}`}>EN</button>
+               <span className="text-gray-700">|</span>
+               <button onClick={() => handleLanguageChange('vi')} className={`text-xs font-bold ${currentLang === 'vi' ? 'text-primary' : 'text-gray-500'}`}>VN</button>
+             </div>
             <button className="text-white p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -177,7 +210,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why Us 섹션 (영어 원문 복구 + 비디오 유지) */}
+      {/* Why Us 섹션 */}
       <section id="why-us" className="py-24 px-6 relative bg-black">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -196,7 +229,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Success Stories 섹션 (영어 원문 복구) */}
+      {/* Success Stories 섹션 */}
       <section id="success-story" className="py-24 px-6 border-t border-white/10 bg-[#0a0a0a]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
