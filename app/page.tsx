@@ -303,31 +303,37 @@ export default function Home() {
       </section>
 
       {/* Why Us 섹션 */}
-      <section id="why-us" className="py-24 px-6 relative overflow-hidden">
-         <div className="absolute inset-0 bg-primary/5 -skew-y-3 z-0 transform origin-top-left scale-110" />
-         <div className="max-w-7xl mx-auto relative z-10">
-           <div className="text-center mb-16">
-             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-               <span className="text-primary">02.</span> WHY HYPER COMMERCE?
-             </h2>
-             <p className="text-gray-400 max-w-2xl mx-auto">We are not just a supplier. We are your business partner.</p>
-           </div>
-           
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-             {[
-               { icon: GitGraph, title: "Data-Driven Insight", desc: "We analyze real-time market data to recommend winning products." },
-               { icon: Factory, title: "Direct Manufacturing", desc: "Connect directly with top-tier Korean factories. No middleman." },
-               { icon: Plane, title: "Global Logistics", desc: "Fast and safe shipping to Vietnam with handled customs clearance." }
-             ].map((item, i) => (
-               <div key={i} className="bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors group">
-                 <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                   <item.icon className="w-7 h-7 text-primary" />
-                 </div>
-                 <h3 className="text-xl font-bold mb-3">{item.title}</h3>
-                 <p className="text-gray-400 leading-relaxed">{item.desc}</p>
-               </div>
-             ))}
-           </div>
+      {/* Why Us 섹션: 공장 비디오 배경 */}
+      <section id="why-us" className="relative h-[600px] w-full overflow-hidden flex items-center justify-center">
+         
+         {/* 1. 비디오 배경 */}
+         <video 
+           autoPlay 
+           loop 
+           muted 
+           playsInline 
+           className="absolute top-0 left-0 w-full h-full object-cover z-0"
+         >
+           {/* ⭐ 아까 넣은 파일 이름과 똑같아야 합니다! */}
+           <source src="/videos/factory.mp4" type="video/mp4" />
+         </video>
+
+         {/* 2. 어두운 막 (글자 잘 보이게 하기 위해) */}
+         <div className="absolute inset-0 bg-black/60 z-10" />
+
+         {/* 3. 소개 문구 */}
+         <div className="relative z-20 text-center px-6 max-w-5xl mx-auto">
+           <span className="inline-block px-4 py-1.5 rounded-full border border-white/30 text-white/90 text-sm font-medium mb-6 backdrop-blur-md">
+             DIRECT MANUFACTURING
+           </span>
+           <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 tracking-tight leading-tight">
+             World-Class Production <br/>
+             <span className="text-primary">Without Middleman</span>
+           </h2>
+           <p className="text-lg md:text-2xl text-gray-200 leading-relaxed font-light max-w-3xl mx-auto">
+             Experience the highest quality standards directly from Korea's top-tier factories.
+             We ensure perfection in every detail for your brand.
+           </p>
          </div>
       </section>
 
