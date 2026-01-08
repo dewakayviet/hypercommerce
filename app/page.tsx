@@ -304,37 +304,45 @@ export default function Home() {
 
       {/* Why Us 섹션 */}
       {/* Why Us 섹션: 공장 비디오 배경 */}
-      <section id="why-us" className="relative h-[600px] w-full overflow-hidden flex items-center justify-center">
-         
-         {/* 1. 비디오 배경 */}
-         <video 
-           autoPlay 
-           loop 
-           muted 
-           playsInline 
-           className="absolute top-0 left-0 w-full h-full object-cover z-0"
-         >
-           {/* ⭐ 아까 넣은 파일 이름과 똑같아야 합니다! */}
-           <source src="/videos/factory.mp4" type="video/mp4" />
-         </video>
+      {/* Why Us 섹션: 텍스트 위 + 비디오 아래 (프레임 액자형) */}
+      <section id="why-us" className="py-24 px-6 relative bg-black">
+        <div className="max-w-7xl mx-auto">
+          
+          {/* 1. 텍스트 소개 (위쪽) */}
+          <div className="text-center mb-16">
+            <span className="inline-block px-4 py-1.5 rounded-full border border-primary/30 text-primary text-xs font-bold mb-6 tracking-widest uppercase">
+              Direct Manufacturing
+            </span>
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+              World-Class Production<br/>
+              <span className="text-gray-500">Without Middleman</span>
+            </h2>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              We connect you directly with Korea's top-tier factories.<br className="hidden md:block"/>
+              Ensuring the highest quality standards for your brand.
+            </p>
+          </div>
 
-         {/* 2. 어두운 막 (글자 잘 보이게 하기 위해) */}
-         <div className="absolute inset-0 bg-black/60 z-10" />
+          {/* 2. 비디오 프레임 (아래쪽) */}
+          <div className="relative w-full max-w-5xl mx-auto rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-gray-900">
+            {/* 비디오 비율을 16:9로 고정 (aspect-video) */}
+            <div className="aspect-video relative">
+              <video 
+                autoPlay 
+                loop 
+                muted 
+                playsInline 
+                className="absolute inset-0 w-full h-full object-cover"
+              >
+                <source src="/videos/factory.mp4" type="video/mp4" />
+              </video>
+              
+              {/* 비디오 위에 살짝 그라데이션을 줘서 더 고급스럽게 */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+            </div>
+          </div>
 
-         {/* 3. 소개 문구 */}
-         <div className="relative z-20 text-center px-6 max-w-5xl mx-auto">
-           <span className="inline-block px-4 py-1.5 rounded-full border border-white/30 text-white/90 text-sm font-medium mb-6 backdrop-blur-md">
-             DIRECT MANUFACTURING
-           </span>
-           <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 tracking-tight leading-tight">
-             World-Class Production <br/>
-             <span className="text-primary">Without Middleman</span>
-           </h2>
-           <p className="text-lg md:text-2xl text-gray-200 leading-relaxed font-light max-w-3xl mx-auto">
-             Experience the highest quality standards directly from Korea's top-tier factories.
-             We ensure perfection in every detail for your brand.
-           </p>
-         </div>
+        </div>
       </section>
 
       {/* 문의하기 모달 */}
