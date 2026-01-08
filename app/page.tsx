@@ -1,75 +1,23 @@
 "use client";
 
-// 1. 이미지 도구 가져오기 (필수)
 import Image from "next/image";
-import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-// 2. Hexagon 제거하고 필요한 아이콘만 가져오기
-import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Smartphone, Loader2, Factory, FlaskConical, Plane, Quote, GitGraph } from "lucide-react";
+// 필요한 아이콘들
+import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2, GitGraph, Factory, Plane } from "lucide-react";
 
-// 3. 트렌드 데이터 (내부 이미지 경로로 설정)
+// 트렌드 데이터 (영어 원문)
 const TRENDS_DATA = [
-  {
-    id: 1,
-    title: "Retinol Ampoule",
-    tag: "#Anti-aging",
-    image: "/images/trend1.jpg", 
-  },
-  {
-    id: 2,
-    title: "Cica Cooling Pad",
-    tag: "#Calming",
-    image: "/images/trend2.jpg",
-  },
-  {
-    id: 3,
-    title: "Glass Water Tint",
-    tag: "#Glow",
-    image: "/images/trend3.jpg",
-  },
-  {
-    id: 4,
-    title: "Silk Hydrator",
-    tag: "#Moisture",
-    image: "/images/trend4.jpg",
-  },
-  {
-    id: 5,
-    title: "Radiance Oil",
-    tag: "#Brightening",
-    image: "/images/trend5.jpg",
-  },
-];
-
-const TESTIMONIALS_DATA = [
-  {
-    id: 1,
-    name: "Sarah Nguyen",
-    role: "CEO, Glow Vietnam",
-    content: "Hyper Commerce helped us launch our brand in just 3 months. The quality is exceptional.",
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: "Minh Tuan",
-    role: "Founder, K-Vibe Shop",
-    content: "The easiest way to source authentic K-Beauty products. Their logistics are flawless.",
-    rating: 5,
-  },
-  {
-    id: 3,
-    name: "Jessica Lee",
-    role: "Brand Manager, Pure Skin",
-    content: "From packaging design to formulation, they handled everything perfectly.",
-    rating: 5,
-  },
+  { id: 1, title: "Retinol Ampoule", tag: "#Anti-aging", image: "/images/trend1.jpg" },
+  { id: 2, title: "Cica Cooling Pad", tag: "#Calming", image: "/images/trend2.jpg" },
+  { id: 3, title: "Glass Water Tint", tag: "#Glow", image: "/images/trend3.jpg" },
+  { id: 4, title: "Silk Hydrator", tag: "#Moisture", image: "/images/trend4.jpg" },
+  { id: 5, title: "Radiance Oil", tag: "#Brightening", image: "/images/trend5.jpg" },
 ];
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeTrend, setActiveTrend] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [language, setLanguage] = useState<'en' | 'vi'>('en');
   
   // 모달 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -79,24 +27,24 @@ export default function Home() {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // 다국어 텍스트 객체
-  const content = {
-    en: {
-      nav: { trends: "TRENDS", why: "WHY US", stories: "SUCCESS STORIES", start: "Start Project" },
-      hero: { tag: "No.1 K-Beauty B2B Platform", title: "Create Your Signature Brand", desc: "From product planning to production and export. We provide a one-stop solution for your K-Beauty business.", cta: "Start Free Consultation" },
-    },
-    vi: {
-      nav: { trends: "XU HƯỚNG", why: "TẠI SAO CHỌN CHÚNG TÔI", stories: "CÂU CHUYỆN THÀNH CÔNG", start: "Bắt đầu dự án" },
-      hero: { tag: "Nền tảng B2B K-Beauty số 1", title: "Tạo Thương Hiệu Riêng Của Bạn", desc: "Từ lập kế hoạch sản phẩm đến sản xuất và xuất khẩu. Chúng tôi cung cấp giải pháp một cửa cho doanh nghiệp K-Beauty của bạn.", cta: "Tư vấn miễn phí ngay" },
-    }
-  };
+  // 구글 번역기 스크립트 로드
+  useEffect(() => {
+    const addScript = document.createElement('script');
+    addScript.setAttribute('src', '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
+    document.body.appendChild(addScript);
 
-  const t = content[language];
+    // 구글 번역 초기화 함수 전역 설정
+    (window as any).googleTranslateElementInit = () => {
+      new (window as any).google.translate.TranslateElement({
+        pageLanguage: 'en', // 기본 언어: 영어
+        layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE, // 심플한 디자인
+        autoDisplay: false,
+      }, 'google_translate_element');
+    };
+  }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => { setIsScrolled(window.scrollY > 50); };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -112,28 +60,18 @@ export default function Home() {
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const scrollAmount = 300;
-      scrollContainerRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
+      scrollContainerRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // API 호출 시뮬레이션 (1.5초)
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitStatus('success');
       setEmail("");
-      
-      // 3초 후 모달 닫기 및 상태 초기화
-      setTimeout(() => {
-        setIsModalOpen(false);
-        setSubmitStatus('idle');
-      }, 3000);
+      setTimeout(() => { setIsModalOpen(false); setSubmitStatus('idle'); }, 3000);
     }, 1500);
   };
 
@@ -144,65 +82,36 @@ export default function Home() {
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isScrolled ? "bg-background/90 backdrop-blur-md border-white/10 py-4 shadow-lg" : "bg-transparent border-transparent py-6"}`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           
-          {/* 로고 이미지 영역 */}
-          <div 
-            className="flex items-center cursor-pointer" 
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
-            <Image
-              src="/images/logo.png"
-              alt="HYPER COMMERCE"
-              width={200}
-              height={60}
-              priority
-              className="object-contain"
-            />
+          {/* 로고 */}
+          <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <Image src="/images/logo.png" alt="HYPER COMMERCE" width={200} height={60} priority className="object-contain" />
           </div>
 
-          {/* 데스크탑 메뉴 */}
+          {/* 데스크탑 메뉴 (영어 원문) */}
           <nav className="hidden md:flex items-center gap-8">
-            {['trends', 'why-us', 'success-story'].map((item) => (
-              <button 
-                key={item}
-                onClick={() => scrollToSection(item)}
-                className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300"
-              >
-                {t.nav[item === 'why-us' ? 'why' : item === 'success-story' ? 'stories' : 'trends']}
-              </button>
-            ))}
+            <button onClick={() => scrollToSection('trends')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">TRENDS</button>
+            <button onClick={() => scrollToSection('why-us')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">WHY US</button>
+            <button onClick={() => scrollToSection('success-story')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">SUCCESS STORIES</button>
           </nav>
 
-          {/* 데스크탑 액션 버튼 */}
+          {/* 데스크탑 액션 버튼 & 구글 번역기 위치 */}
           <div className="hidden md:flex items-center gap-6">
-            <div className="flex items-center gap-2 bg-white/5 rounded-full p-1 border border-white/10">
-              <button 
-                onClick={() => setLanguage('en')}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === 'en' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
-              >
-                EN
-              </button>
-              <button 
-                onClick={() => setLanguage('vi')}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${language === 'vi' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
-              >
-                VN
-              </button>
-            </div>
+            
+            {/* ⭐ 구글 번역기 위젯이 여기에 생깁니다 ⭐ */}
+            <div id="google_translate_element" className="google-translate-container"></div>
+
             <button 
               onClick={() => setIsModalOpen(true)}
               className="group bg-primary hover:bg-primary/90 text-black px-6 py-2.5 rounded-full font-bold transition-all flex items-center gap-2 text-sm"
             >
-              {t.nav.start} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              Start Project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
 
-          {/* 모바일 헤더: 햄버거 + 언어 */}
+          {/* 모바일 헤더 */}
           <div className="md:hidden flex items-center gap-4">
-            <div className="flex items-center gap-1">
-              <button onClick={() => setLanguage('en')} className={`text-xs font-bold ${language === 'en' ? 'text-primary' : 'text-gray-500'}`}>EN</button>
-              <span className="text-gray-700">|</span>
-              <button onClick={() => setLanguage('vi')} className={`text-xs font-bold ${language === 'vi' ? 'text-primary' : 'text-gray-500'}`}>VN</button>
-            </div>
+             {/* 모바일에서도 번역기 노출 */}
+             <div id="google_translate_element_mobile"></div> 
             <button className="text-white p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -210,15 +119,13 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 모바일 메뉴 (전체화면) */}
+      {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-black/95 flex flex-col items-center justify-center gap-8 md:hidden backdrop-blur-xl">
-          <button onClick={() => scrollToSection('trends')} className="text-3xl font-bold text-white hover:text-primary uppercase">{t.nav.trends}</button>
-          <button onClick={() => scrollToSection('why-us')} className="text-3xl font-bold text-white hover:text-primary uppercase">{t.nav.why}</button>
-          <button onClick={() => scrollToSection('success-story')} className="text-3xl font-bold text-white hover:text-primary uppercase">{t.nav.stories}</button>
-          <button onClick={() => { setIsModalOpen(true); setIsMobileMenuOpen(false); }} className="bg-primary text-black text-xl px-8 py-3 rounded-full font-bold mt-4">
-            {t.nav.start}
-          </button>
+          <button onClick={() => scrollToSection('trends')} className="text-3xl font-bold text-white hover:text-primary uppercase">TRENDS</button>
+          <button onClick={() => scrollToSection('why-us')} className="text-3xl font-bold text-white hover:text-primary uppercase">WHY US</button>
+          <button onClick={() => scrollToSection('success-story')} className="text-3xl font-bold text-white hover:text-primary uppercase">SUCCESS STORIES</button>
+          <button onClick={() => { setIsModalOpen(true); setIsMobileMenuOpen(false); }} className="bg-primary text-black text-xl px-8 py-3 rounded-full font-bold mt-4">Start Project</button>
         </div>
       )}
 
@@ -226,24 +133,19 @@ export default function Home() {
       <section className="relative pt-32 pb-10 md:pt-48 md:pb-20 px-6 flex flex-col items-center text-center overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
         <div className="relative z-10 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-primary text-sm font-medium mb-6 animate-fade-in-up">
-          <Star className="w-3 h-3 fill-current" /> {t.hero.tag}
+          <Star className="w-3 h-3 fill-current" /> No.1 K-Beauty B2B Platform
         </div>
         <h1 className="relative z-10 text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent max-w-5xl mx-auto leading-[1.1]">
-          {t.hero.title}
+          Create Your Signature Brand
         </h1>
         <p className="relative z-10 text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          {t.hero.desc}
+          From product planning to production and export. We provide a one-stop solution for your K-Beauty business.
         </p>
         <div className="relative z-10 flex flex-col sm:flex-row gap-4 w-full justify-center">
-           <button 
-             onClick={() => setIsModalOpen(true)}
-             className="bg-primary hover:bg-primary/90 text-black px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(204,253,50,0.3)]"
-           >
-             {t.hero.cta} <ArrowRight className="w-5 h-5" />
+           <button onClick={() => setIsModalOpen(true)} className="bg-primary hover:bg-primary/90 text-black px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(204,253,50,0.3)]">
+             Start Free Consultation <ArrowRight className="w-5 h-5" />
            </button>
-           <button className="px-8 py-4 rounded-full font-bold text-lg text-white border border-white/20 hover:bg-white/10 transition-all">
-             View Success Stories
-           </button>
+           <button className="px-8 py-4 rounded-full font-bold text-lg text-white border border-white/20 hover:bg-white/10 transition-all">View Success Stories</button>
         </div>
       </section>
 
@@ -252,49 +154,22 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center gap-3">
-                <span className="text-primary">01.</span> K-BEAUTY TRENDS
-              </h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center gap-3"><span className="text-primary">01.</span> K-BEAUTY TRENDS</h2>
               <p className="text-gray-400">Discover the hottest products in Korea right now.</p>
             </div>
             <div className="flex gap-2">
-              <button onClick={() => scroll('left')} className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors">
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button onClick={() => scroll('right')} className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors">
-                <ChevronRight className="w-6 h-6" />
-              </button>
+              <button onClick={() => scroll('left')} className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors"><ChevronLeft className="w-6 h-6" /></button>
+              <button onClick={() => scroll('right')} className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors"><ChevronRight className="w-6 h-6" /></button>
             </div>
           </div>
-
-          <div 
-            ref={scrollContainerRef}
-            className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-6 px-6"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
+          <div ref={scrollContainerRef} className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-6 px-6" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {TRENDS_DATA.map((trend, idx) => (
-              <div 
-                key={trend.id} 
-                className="min-w-[280px] md:min-w-[320px] snap-center group relative rounded-2xl overflow-hidden aspect-[3/4] cursor-pointer"
-                onMouseEnter={() => setActiveTrend(idx)}
-              >
-                <Image 
-                  src={trend.image} 
-                  alt={trend.title} 
-                  fill 
-                  className="object-cover transition-transform duration-700 group-hover:scale-110" 
-                />
+              <div key={trend.id} className="min-w-[280px] md:min-w-[320px] snap-center group relative rounded-2xl overflow-hidden aspect-[3/4] cursor-pointer" onMouseEnter={() => setActiveTrend(idx)}>
+                <Image src={trend.image} alt={trend.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
-                  <span className="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold mb-2 border border-primary/20 backdrop-blur-sm">
-                    {trend.tag}
-                  </span>
+                  <span className="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold mb-2 border border-primary/20 backdrop-blur-sm">{trend.tag}</span>
                   <h3 className="text-2xl font-bold text-white mb-1">{trend.title}</h3>
-                  <div className="h-0 group-hover:h-auto overflow-hidden transition-all duration-300">
-                     <p className="text-gray-300 text-sm mt-2 opacity-0 group-hover:opacity-100 transition-opacity delay-100">
-                       Top selling item in Olive Young 2024.
-                     </p>
-                  </div>
                 </div>
               </div>
             ))}
@@ -302,87 +177,42 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why Us 섹션 */}
-      {/* Why Us 섹션: 공장 비디오 배경 */}
-      {/* Why Us 섹션: 텍스트 위 + 비디오 아래 (프레임 액자형) */}
+      {/* Why Us 섹션 (영어 원문 복구 + 비디오 유지) */}
       <section id="why-us" className="py-24 px-6 relative bg-black">
         <div className="max-w-7xl mx-auto">
-          
-          {/* 1. 텍스트 소개 (위쪽) */}
           <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 rounded-full border border-primary/30 text-primary text-xs font-bold mb-6 tracking-widest uppercase">
-              Direct Manufacturing
-            </span>
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              World-Class Production<br/>
-              <span className="text-gray-500">Without Middleman</span>
-            </h2>
-            <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              We connect you directly with Korea's top-tier factories.<br className="hidden md:block"/>
-              Ensuring the highest quality standards for your brand.
-            </p>
+            <span className="inline-block px-4 py-1.5 rounded-full border border-primary/30 text-primary text-xs font-bold mb-6 tracking-widest uppercase">Direct Manufacturing</span>
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">World-Class Production<br/><span className="text-gray-500">Without Middleman</span></h2>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">We connect you directly with Korea's top-tier factories. Ensuring the highest quality standards for your brand.</p>
           </div>
-
-          {/* 2. 비디오 프레임 (아래쪽) */}
           <div className="relative w-full max-w-5xl mx-auto rounded-3xl overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-gray-900">
-            {/* 비디오 비율을 16:9로 고정 (aspect-video) */}
             <div className="aspect-video relative">
-              <video 
-                autoPlay 
-                loop 
-                muted 
-                playsInline 
-                className="absolute inset-0 w-full h-full object-cover"
-              >
+              <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover">
                 <source src="/videos/factory.mp4" type="video/mp4" />
               </video>
-              
-              {/* 비디오 위에 살짝 그라데이션을 줘서 더 고급스럽게 */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
             </div>
           </div>
-
         </div>
       </section>
-      {/* Success Stories 섹션 (복구 완료!) */}
+
+      {/* Success Stories 섹션 (영어 원문 복구) */}
       <section id="success-story" className="py-24 px-6 border-t border-white/10 bg-[#0a0a0a]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">SUCCESS STORIES</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 uppercase">SUCCESS STORIES</h2>
             <p className="text-gray-400">See how we helped other brands grow.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              {
-                name: "Sarah Nguyen",
-                role: "CEO, Glow Vietnam",
-                content: "Hyper Commerce helped us launch our brand in just 3 months. The quality is exceptional.",
-                rating: 5,
-              },
-              {
-                name: "Minh Tuan",
-                role: "Founder, K-Vibe Shop",
-                content: "The easiest way to source authentic K-Beauty products. Their logistics are flawless.",
-                rating: 5,
-              },
-              {
-                name: "Jessica Lee",
-                role: "Brand Manager, Pure Skin",
-                content: "From packaging design to formulation, they handled everything perfectly.",
-                rating: 5,
-              },
+              { name: "Sarah Nguyen", role: "CEO, Glow Vietnam", content: "Hyper Commerce helped us launch our brand in just 3 months. The quality is exceptional.", rating: 5 },
+              { name: "Minh Tuan", role: "Founder, K-Vibe Shop", content: "The easiest way to source authentic K-Beauty products. Their logistics are flawless.", rating: 5 },
+              { name: "Jessica Lee", role: "Brand Manager, Pure Skin", content: "From packaging design to formulation, they handled everything perfectly.", rating: 5 }
             ].map((story, i) => (
               <div key={i} className="bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(story.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-primary text-primary" />
-                  ))}
-                </div>
+                <div className="flex gap-1 mb-4">{[...Array(story.rating)].map((_, i) => (<Star key={i} className="w-4 h-4 fill-primary text-primary" />))}</div>
                 <p className="text-gray-300 mb-6 leading-relaxed">"{story.content}"</p>
-                <div>
-                  <div className="font-bold text-white">{story.name}</div>
-                  <div className="text-sm text-gray-500">{story.role}</div>
-                </div>
+                <div><div className="font-bold text-white">{story.name}</div><div className="text-sm text-gray-500">{story.role}</div></div>
               </div>
             ))}
           </div>
@@ -394,18 +224,10 @@ export default function Home() {
         <div className="fixed inset-0 z-[60] flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
           <div className="relative bg-[#111] border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl animate-fade-in-up">
-            <button 
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-white"
-            >
-              <X className="w-6 h-6" />
-            </button>
-
+            <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-white"><X className="w-6 h-6" /></button>
             {submitStatus === 'success' ? (
                <div className="text-center py-10">
-                 <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                   <User className="w-8 h-8 text-green-500" />
-                 </div>
+                 <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4"><User className="w-8 h-8 text-green-500" /></div>
                  <h3 className="text-2xl font-bold text-white mb-2">Thank you!</h3>
                  <p className="text-gray-400">We will contact you shortly via email.</p>
                </div>
@@ -416,20 +238,9 @@ export default function Home() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email Address</label>
-                    <input 
-                      type="email" 
-                      required
-                      placeholder="ceo@company.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
-                    />
+                    <input type="email" required placeholder="ceo@company.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" />
                   </div>
-                  <button 
-                    type="submit" 
-                    disabled={isSubmitting}
-                    className="w-full bg-primary text-black font-bold py-3.5 rounded-lg hover:bg-primary/90 transition-all flex items-center justify-center gap-2"
-                  >
+                  <button type="submit" disabled={isSubmitting} className="w-full bg-primary text-black font-bold py-3.5 rounded-lg hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
                     {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Get Free Consultation"}
                   </button>
                 </form>
@@ -443,35 +254,13 @@ export default function Home() {
       <footer className="py-12 border-t border-white/10 bg-black text-center md:text-left">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="col-span-1 md:col-span-2">
-             <div className="flex items-center gap-2 justify-center md:justify-start mb-4">
-               {/* 푸터 로고도 이미지로 교체 */}
-               <Image src="/images/logo.png" alt="HYPER COMMERCE" width={150} height={45} className="object-contain" />
-             </div>
-             <p className="text-gray-500 text-sm max-w-sm mx-auto md:mx-0">
-               Seoul, Korea | Ho Chi Minh, Vietnam<br/>
-               Registration No: 123-45-67890<br/>
-               contact@hypercommerce.site
-             </p>
+             <div className="flex items-center gap-2 justify-center md:justify-start mb-4"><Image src="/images/logo.png" alt="HYPER COMMERCE" width={150} height={45} className="object-contain" /></div>
+             <p className="text-gray-500 text-sm max-w-sm mx-auto md:mx-0">Seoul, Korea | Ho Chi Minh, Vietnam<br/>Registration No: 123-45-67890<br/>contact@hypercommerce.site</p>
           </div>
-          <div>
-            <h4 className="font-bold text-white mb-4">Platform</h4>
-            <ul className="space-y-2 text-sm text-gray-500">
-              <li><a href="#" className="hover:text-primary">Best Sellers</a></li>
-              <li><a href="#" className="hover:text-primary">New Arrivals</a></li>
-              <li><a href="#" className="hover:text-primary">OEM/ODM Service</a></li>
-            </ul>
-          </div>
-          <div>
-             <h4 className="font-bold text-white mb-4">Legal</h4>
-             <ul className="space-y-2 text-sm text-gray-500">
-               <li><a href="#" className="hover:text-primary">Privacy Policy</a></li>
-               <li><a href="#" className="hover:text-primary">Terms of Service</a></li>
-             </ul>
-          </div>
+          <div><h4 className="font-bold text-white mb-4">Platform</h4><ul className="space-y-2 text-sm text-gray-500"><li><a href="#" className="hover:text-primary">Best Sellers</a></li><li><a href="#" className="hover:text-primary">New Arrivals</a></li><li><a href="#" className="hover:text-primary">OEM/ODM Service</a></li></ul></div>
+          <div><h4 className="font-bold text-white mb-4">Legal</h4><ul className="space-y-2 text-sm text-gray-500"><li><a href="#" className="hover:text-primary">Privacy Policy</a></li><li><a href="#" className="hover:text-primary">Terms of Service</a></li></ul></div>
         </div>
-        <div className="text-center text-gray-600 text-xs mt-12">
-          © 2024 HYPER COMMERCE. All rights reserved.
-        </div>
+        <div className="text-center text-gray-600 text-xs mt-12">© 2024 HYPER COMMERCE. All rights reserved.</div>
       </footer>
     </div>
   );
