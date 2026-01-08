@@ -344,6 +344,50 @@ export default function Home() {
 
         </div>
       </section>
+      {/* Success Stories 섹션 (복구 완료!) */}
+      <section id="success-story" className="py-24 px-6 border-t border-white/10 bg-[#0a0a0a]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">SUCCESS STORIES</h2>
+            <p className="text-gray-400">See how we helped other brands grow.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Sarah Nguyen",
+                role: "CEO, Glow Vietnam",
+                content: "Hyper Commerce helped us launch our brand in just 3 months. The quality is exceptional.",
+                rating: 5,
+              },
+              {
+                name: "Minh Tuan",
+                role: "Founder, K-Vibe Shop",
+                content: "The easiest way to source authentic K-Beauty products. Their logistics are flawless.",
+                rating: 5,
+              },
+              {
+                name: "Jessica Lee",
+                role: "Brand Manager, Pure Skin",
+                content: "From packaging design to formulation, they handled everything perfectly.",
+                rating: 5,
+              },
+            ].map((story, i) => (
+              <div key={i} className="bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(story.rating)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 fill-primary text-primary" />
+                  ))}
+                </div>
+                <p className="text-gray-300 mb-6 leading-relaxed">"{story.content}"</p>
+                <div>
+                  <div className="font-bold text-white">{story.name}</div>
+                  <div className="text-sm text-gray-500">{story.role}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* 문의하기 모달 */}
       {isModalOpen && (
