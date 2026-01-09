@@ -2,15 +2,15 @@
 
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2 } from "lucide-react";
+// 필요한 아이콘 추가 (지구본, 트로피, 건물 등)
+import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2, Globe, Trophy, Store } from "lucide-react";
 
-// ⭐ 1. 내 제품 데이터로 교체 (이미지를 배열 []로 넣어서 여러 장 처리)
+// 트렌드 데이터 (사장님 제품 + 슬라이드용 이미지)
 const TRENDS_DATA = [
   { 
     id: 1, 
     title: "One-PL Foundation", 
     tag: "#Makeup", 
-    // 파일명 p1-1.jpg ~ p1-3.jpg
     images: ["/images/p1-1.jpg", "/images/p1-2.jpg", "/images/p1-3.jpg"] 
   },
   { 
@@ -39,7 +39,31 @@ const TRENDS_DATA = [
   },
 ];
 
-// ⭐ 2. 슬라이드 기능을 담당하는 카드 컴포넌트 (새로 추가됨)
+// ⭐ PDF 내용을 바탕으로 만든 성공 사례 데이터
+const SUCCESS_DATA = [
+  {
+    id: 1,
+    category: "GLOBAL EXPANSION",
+    title: "Active in Major Asian Markets",
+    desc: "Successfully expanded into Japan (Qoo10, Amazon), Vietnam, and China. We are building a strong global network beyond Korea.",
+    icon: Globe, // 지구본 아이콘
+  },
+  {
+    id: 2,
+    category: "BEST SELLER",
+    title: "600,000 Units Sold",
+    desc: "Our signature '1.P.L Foundation' has achieved 600K cumulative sales, establishing itself as a core base makeup brand in the market.",
+    icon: Trophy, // 트로피 아이콘
+  },
+  {
+    id: 3,
+    category: "PREMIUM CHANNELS",
+    title: "Duty-Free & Olive Young",
+    desc: "Launched in major Duty-Free shops (Lotte, Shilla) and Korea's No.1 H&B store 'Olive Young', proving our brand value.",
+    icon: Store, // 매장 아이콘
+  }
+];
+
 const TrendCard = ({ item }: { item: any }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -47,12 +71,10 @@ const TrendCard = ({ item }: { item: any }) => {
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isHovered && item.images.length > 1) {
-      // 마우스 올리면 1.2초마다 사진 변경
       interval = setInterval(() => {
         setCurrentIdx((prev) => (prev + 1) % item.images.length);
       }, 1200);
     } else {
-      // 마우스 떼면 첫 번째 사진으로 리셋
       setCurrentIdx(0);
     }
     return () => clearInterval(interval);
@@ -64,32 +86,17 @@ const TrendCard = ({ item }: { item: any }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* 이미지 슬라이더 영역 */}
       <div className="absolute inset-0 w-full h-full">
         {item.images.map((src: string, index: number) => (
-          <div 
-            key={index}
-            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${index === currentIdx ? 'opacity-100' : 'opacity-0'}`}
-          >
-            <Image 
-              src={src} 
-              alt={item.title} 
-              fill 
-              className={`object-cover transition-transform duration-[2000ms] ${isHovered ? 'scale-110' : 'scale-100'}`} 
-            />
+          <div key={index} className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${index === currentIdx ? 'opacity-100' : 'opacity-0'}`}>
+            <Image src={src} alt={item.title} fill className={`object-cover transition-transform duration-[2000ms] ${isHovered ? 'scale-110' : 'scale-100'}`} />
           </div>
         ))}
       </div>
-
-      {/* 그라데이션 및 텍스트 */}
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90" />
       <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
-        <span className="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold mb-2 border border-primary/20 backdrop-blur-sm">
-          {item.tag}
-        </span>
+        <span className="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold mb-2 border border-primary/20 backdrop-blur-sm">{item.tag}</span>
         <h3 className="text-2xl font-bold text-white mb-1">{item.title}</h3>
-        
-        {/* 슬라이드 인디케이터 (점) */}
         <div className="flex gap-1.5 mt-3 h-1">
           {item.images.map((_: any, idx: number) => (
              <div key={idx} className={`h-full rounded-full transition-all duration-300 ${idx === currentIdx ? 'w-6 bg-primary' : 'w-1.5 bg-white/30'}`} />
@@ -104,24 +111,17 @@ export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentLang, setCurrentLang] = useState('en'); 
-  
-  // 모달 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // 1. 구글 번역 스크립트 로드
   useEffect(() => {
     const cookies = document.cookie.split(';');
     const googtrans = cookies.find(c => c.trim().startsWith('googtrans='));
-    if (googtrans && googtrans.includes('/en/vi')) {
-      setCurrentLang('vi');
-    } else {
-      setCurrentLang('en');
-    }
+    if (googtrans && googtrans.includes('/en/vi')) { setCurrentLang('vi'); } 
+    else { setCurrentLang('en'); }
 
     const addScript = document.createElement('script');
     addScript.setAttribute('src', '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
@@ -129,10 +129,7 @@ export default function Home() {
 
     (window as any).googleTranslateElementInit = () => {
       new (window as any).google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'en,vi', 
-        layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false,
+        pageLanguage: 'en', includedLanguages: 'en,vi', layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false,
       }, 'google_translate_element');
     };
   }, []);
@@ -153,10 +150,7 @@ export default function Home() {
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuOpen(false);
-    }
+    if (element) { element.scrollIntoView({ behavior: 'smooth' }); setIsMobileMenuOpen(false); }
   };
 
   const scroll = (direction: 'left' | 'right') => {
@@ -169,28 +163,14 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitStatus('success');
-      setEmail("");
-      setTimeout(() => { setIsModalOpen(false); setSubmitStatus('idle'); }, 3000);
-    }, 1500);
+    setTimeout(() => { setIsSubmitting(false); setSubmitStatus('success'); setEmail(""); setTimeout(() => { setIsModalOpen(false); setSubmitStatus('idle'); }, 3000); }, 1500);
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-primary-foreground font-sans">
-      
-      <style jsx global>{`
-        .goog-te-banner-frame { display: none !important; }
-        body { top: 0 !important; }
-        .goog-tooltip { display: none !important; }
-        .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
-        #google_translate_element { display: none !important; }
-      `}</style>
-
+      <style jsx global>{` .goog-te-banner-frame { display: none !important; } body { top: 0 !important; } .goog-tooltip { display: none !important; } .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; } #google_translate_element { display: none !important; } `}</style>
       <div id="google_translate_element"></div>
 
-      {/* 헤더 */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isScrolled ? "bg-background/90 backdrop-blur-md border-white/10 py-4 shadow-lg" : "bg-transparent border-transparent py-6"}`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
@@ -223,7 +203,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-black/95 flex flex-col items-center justify-center gap-8 md:hidden backdrop-blur-xl">
           <button onClick={() => scrollToSection('trends')} className="text-3xl font-bold text-white hover:text-primary uppercase">TRENDS</button>
@@ -233,7 +212,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* 히어로 섹션 */}
       <section className="relative pt-32 pb-10 md:pt-48 md:pb-20 px-6 flex flex-col items-center text-center overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
         <div className="relative z-10 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-primary text-sm font-medium mb-6 animate-fade-in-up">
@@ -253,7 +231,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 트렌드 섹션 (내 제품 슬라이드 적용) */}
       <section id="trends" className="py-20 px-6 border-t border-white/5 relative bg-gradient-to-b from-transparent to-black/50">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-12">
@@ -266,17 +243,12 @@ export default function Home() {
               <button onClick={() => scroll('right')} className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors"><ChevronRight className="w-6 h-6" /></button>
             </div>
           </div>
-          
           <div ref={scrollContainerRef} className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-6 px-6" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            {/* ⭐ 기존 map을 새 컴포넌트(TrendCard)로 교체 */}
-            {TRENDS_DATA.map((trend) => (
-              <TrendCard key={trend.id} item={trend} />
-            ))}
+            {TRENDS_DATA.map((trend) => ( <TrendCard key={trend.id} item={trend} /> ))}
           </div>
         </div>
       </section>
 
-      {/* Why Us 섹션 */}
       <section id="why-us" className="py-24 px-6 relative bg-black">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -295,30 +267,43 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Success Stories 섹션 */}
+      {/* ⭐⭐⭐ Success Stories 섹션 (브랜드북 내용 반영 / 가로형 레이아웃) ⭐⭐⭐ */}
       <section id="success-story" className="py-24 px-6 border-t border-white/10 bg-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 uppercase">SUCCESS STORIES</h2>
-            <p className="text-gray-400">See how we helped other brands grow.</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 uppercase tracking-tight">BRAND SUCCESS STORIES</h2>
+            <p className="text-gray-400">Our achievements and global expansion history.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { name: "Sarah Nguyen", role: "CEO, Glow Vietnam", content: "Hyper Commerce helped us launch our brand in just 3 months. The quality is exceptional.", rating: 5 },
-              { name: "Minh Tuan", role: "Founder, K-Vibe Shop", content: "The easiest way to source authentic K-Beauty products. Their logistics are flawless.", rating: 5 },
-              { name: "Jessica Lee", role: "Brand Manager, Pure Skin", content: "From packaging design to formulation, they handled everything perfectly.", rating: 5 }
-            ].map((story, i) => (
-              <div key={i} className="bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-colors">
-                <div className="flex gap-1 mb-4">{[...Array(story.rating)].map((_, i) => (<Star key={i} className="w-4 h-4 fill-primary text-primary" />))}</div>
-                <p className="text-gray-300 mb-6 leading-relaxed">"{story.content}"</p>
-                <div><div className="font-bold text-white">{story.name}</div><div className="text-sm text-gray-500">{story.role}</div></div>
+          
+          <div className="flex flex-col gap-6">
+            {SUCCESS_DATA.map((item, i) => (
+              <div key={i} className="group w-full bg-[#111] border border-white/10 p-8 md:p-10 rounded-3xl hover:border-primary/50 transition-all duration-300 hover:bg-[#151515]">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10">
+                  {/* 아이콘 영역 (왼쪽) */}
+                  <div className="shrink-0 w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <item.icon className="w-8 h-8 text-primary" />
+                  </div>
+                  
+                  {/* 텍스트 영역 (오른쪽) */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                       <span className="text-xs font-bold text-primary tracking-widest uppercase border border-primary/30 px-2 py-1 rounded">{item.category}</span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 group-hover:text-primary transition-colors">{item.title}</h3>
+                    <p className="text-gray-400 text-lg leading-relaxed">{item.desc}</p>
+                  </div>
+
+                  {/* 화살표 (장식용) */}
+                  <div className="hidden md:block text-gray-600 group-hover:text-primary group-hover:translate-x-2 transition-all">
+                    <ArrowRight className="w-6 h-6" />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 문의하기 모달 */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
@@ -349,7 +334,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* 푸터 */}
       <footer className="py-12 border-t border-white/10 bg-black text-center md:text-left">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="col-span-1 md:col-span-2">
