@@ -17,7 +17,7 @@ export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeTrend, setActiveTrend] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState('en');
+  const [currentLang, setCurrentLang] = useState('en'); // 현재 언어 상태
   
   // 모달 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,8 +27,17 @@ export default function Home() {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // 1. 구글 번역 스크립트 로드 (영어, 베트남어만 설정)
+  // 1. 구글 번역 스크립트 로드 & 초기 언어 감지
   useEffect(() => {
+    // 쿠키를 확인해서 현재 언어 상태 버튼(EN/VN) 색상 맞추기
+    const cookies = document.cookie.split(';');
+    const googtrans = cookies.find(c => c.trim().startsWith('googtrans='));
+    if (googtrans && googtrans.includes('/en/vi')) {
+      setCurrentLang('vi');
+    } else {
+      setCurrentLang('en');
+    }
+
     const addScript = document.createElement('script');
     addScript.setAttribute('src', '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
     document.body.appendChild(addScript);
@@ -36,7 +45,7 @@ export default function Home() {
     (window as any).googleTranslateElementInit = () => {
       new (window as any).google.translate.TranslateElement({
         pageLanguage: 'en',
-        includedLanguages: 'en,vi', // ⭐ 딱 영어와 베트남어만 로드합니다!
+        includedLanguages: 'en,vi', // 영어, 베트남어만 로드
         layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false,
       }, 'google_translate_element');
@@ -50,16 +59,21 @@ export default function Home() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 3. 언어 변경 함수 (예쁜 버튼과 구글 번역기 연결)
+  // 3. 언어 변경 함수 (쿠키 방식 - 100% 작동)
   const handleLanguageChange = (lang: string) => {
-    setCurrentLang(lang);
+    // 1. 쿠키 설정 (구글 번역기가 이 쿠키를 봅니다)
+    // "/en/vi"는 영어->베트남어, "/en/en"은 영어->영어(원문)
+    const cookieValue = lang === 'vi' ? '/en/vi' : '/en/en';
     
-    // 숨겨진 구글 번역기 콤보박스를 찾아서 강제로 변경
-    const googleCombo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-    if (googleCombo) {
-      googleCombo.value = lang;
-      googleCombo.dispatchEvent(new Event('change'));
-    }
+    // 도메인 전체에 쿠키 적용
+    document.cookie = `googtrans=${cookieValue}; path=/; domain=${window.location.hostname}`;
+    document.cookie = `googtrans=${cookieValue}; path=/;`; // 혹시 몰라 도메인 없이도 설정
+
+    // 2. 상태 변경
+    setCurrentLang(lang);
+
+    // 3. 페이지 새로고침 (구글 번역기가 쿠키를 읽고 번역 시작)
+    window.location.reload();
   };
 
   const scrollToSection = (id: string) => {
@@ -91,16 +105,20 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-primary-foreground font-sans">
       
-      {/* ⭐ 구글 번역기 스타일 숨김 처리 (중요!) */}
+      {/* 구글 번역기 숨김 처리 (CSS) */}
       <style jsx global>{`
-        #google_translate_element { display: none !important; }
+        /* 구글 번역 상단 배너 숨기기 */
         .goog-te-banner-frame { display: none !important; }
         body { top: 0 !important; }
+        /* 구글 번역 툴팁 숨기기 */
         .goog-tooltip { display: none !important; }
+        .goog-tooltip:hover { display: none !important; }
         .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+        /* 구글 번역 위젯(콤보박스) 숨기기 */
+        #google_translate_element { display: none !important; }
       `}</style>
 
-      {/* 숨겨진 구글 번역 요소 (기능만 작동) */}
+      {/* 숨겨진 구글 번역 요소 (기능 작동용) */}
       <div id="google_translate_element"></div>
 
       {/* 헤더 */}
@@ -118,7 +136,7 @@ export default function Home() {
           </nav>
 
           <div className="hidden md:flex items-center gap-6">
-            {/* ⭐ 예쁜 언어 선택 버튼 복구! */}
+            {/* ⭐ 언어 선택 버튼 (클릭 시 쿠키 설정 후 새로고침) */}
             <div className="flex items-center gap-2 bg-white/5 rounded-full p-1 border border-white/10">
               <button 
                 onClick={() => handleLanguageChange('en')}
