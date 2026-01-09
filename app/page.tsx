@@ -4,20 +4,106 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2 } from "lucide-react";
 
-// 트렌드 데이터
+// ⭐ 1. 내 제품 데이터로 교체 (이미지를 배열 []로 넣어서 여러 장 처리)
 const TRENDS_DATA = [
-  { id: 1, title: "Retinol Ampoule", tag: "#Anti-aging", image: "/images/trend1.jpg" },
-  { id: 2, title: "Cica Cooling Pad", tag: "#Calming", image: "/images/trend2.jpg" },
-  { id: 3, title: "Glass Water Tint", tag: "#Glow", image: "/images/trend3.jpg" },
-  { id: 4, title: "Silk Hydrator", tag: "#Moisture", image: "/images/trend4.jpg" },
-  { id: 5, title: "Radiance Oil", tag: "#Brightening", image: "/images/trend5.jpg" },
+  { 
+    id: 1, 
+    title: "One-PL Foundation", 
+    tag: "#Makeup", 
+    // 파일명 p1-1.jpg ~ p1-3.jpg
+    images: ["/images/p1-1.jpg", "/images/p1-2.jpg", "/images/p1-3.jpg"] 
+  },
+  { 
+    id: 2, 
+    title: "Monere Scalp Pack", 
+    tag: "#HairCare", 
+    images: ["/images/p2-1.jpg", "/images/p2-2.jpg"] 
+  },
+  { 
+    id: 3, 
+    title: "Anti-Hair Loss Shampoo", 
+    tag: "#HairCare", 
+    images: ["/images/p3-1.jpg", "/images/p3-2.jpg"] 
+  },
+  { 
+    id: 4, 
+    title: "Cloud Cube Blusher", 
+    tag: "#Makeup", 
+    images: ["/images/p4-1.jpg", "/images/p4-2.jpg"] 
+  },
+  { 
+    id: 5, 
+    title: "Heartleaf Blemish Pad", 
+    tag: "#Skincare", 
+    images: ["/images/p5-1.jpg", "/images/p5-2.jpg", "/images/p5-3.jpg"] 
+  },
 ];
+
+// ⭐ 2. 슬라이드 기능을 담당하는 카드 컴포넌트 (새로 추가됨)
+const TrendCard = ({ item }: { item: any }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [currentIdx, setCurrentIdx] = useState(0);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isHovered && item.images.length > 1) {
+      // 마우스 올리면 1.2초마다 사진 변경
+      interval = setInterval(() => {
+        setCurrentIdx((prev) => (prev + 1) % item.images.length);
+      }, 1200);
+    } else {
+      // 마우스 떼면 첫 번째 사진으로 리셋
+      setCurrentIdx(0);
+    }
+    return () => clearInterval(interval);
+  }, [isHovered, item.images.length]);
+
+  return (
+    <div 
+      className="min-w-[280px] md:min-w-[320px] snap-center group relative rounded-2xl overflow-hidden aspect-[3/4] cursor-pointer border border-white/5 bg-gray-900"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* 이미지 슬라이더 영역 */}
+      <div className="absolute inset-0 w-full h-full">
+        {item.images.map((src: string, index: number) => (
+          <div 
+            key={index}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${index === currentIdx ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <Image 
+              src={src} 
+              alt={item.title} 
+              fill 
+              className={`object-cover transition-transform duration-[2000ms] ${isHovered ? 'scale-110' : 'scale-100'}`} 
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* 그라데이션 및 텍스트 */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90" />
+      <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
+        <span className="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold mb-2 border border-primary/20 backdrop-blur-sm">
+          {item.tag}
+        </span>
+        <h3 className="text-2xl font-bold text-white mb-1">{item.title}</h3>
+        
+        {/* 슬라이드 인디케이터 (점) */}
+        <div className="flex gap-1.5 mt-3 h-1">
+          {item.images.map((_: any, idx: number) => (
+             <div key={idx} className={`h-full rounded-full transition-all duration-300 ${idx === currentIdx ? 'w-6 bg-primary' : 'w-1.5 bg-white/30'}`} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeTrend, setActiveTrend] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState('en'); // 현재 언어 상태
+  const [currentLang, setCurrentLang] = useState('en'); 
   
   // 모달 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,9 +113,8 @@ export default function Home() {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // 1. 구글 번역 스크립트 로드 & 초기 언어 감지
+  // 1. 구글 번역 스크립트 로드
   useEffect(() => {
-    // 쿠키를 확인해서 현재 언어 상태 버튼(EN/VN) 색상 맞추기
     const cookies = document.cookie.split(';');
     const googtrans = cookies.find(c => c.trim().startsWith('googtrans='));
     if (googtrans && googtrans.includes('/en/vi')) {
@@ -45,34 +130,24 @@ export default function Home() {
     (window as any).googleTranslateElementInit = () => {
       new (window as any).google.translate.TranslateElement({
         pageLanguage: 'en',
-        includedLanguages: 'en,vi', // 영어, 베트남어만 로드
+        includedLanguages: 'en,vi', 
         layout: (window as any).google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false,
       }, 'google_translate_element');
     };
   }, []);
 
-  // 2. 스크롤 감지
   useEffect(() => {
     const handleScroll = () => { setIsScrolled(window.scrollY > 50); };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 3. 언어 변경 함수 (쿠키 방식 - 100% 작동)
   const handleLanguageChange = (lang: string) => {
-    // 1. 쿠키 설정 (구글 번역기가 이 쿠키를 봅니다)
-    // "/en/vi"는 영어->베트남어, "/en/en"은 영어->영어(원문)
     const cookieValue = lang === 'vi' ? '/en/vi' : '/en/en';
-    
-    // 도메인 전체에 쿠키 적용
     document.cookie = `googtrans=${cookieValue}; path=/; domain=${window.location.hostname}`;
-    document.cookie = `googtrans=${cookieValue}; path=/;`; // 혹시 몰라 도메인 없이도 설정
-
-    // 2. 상태 변경
+    document.cookie = `googtrans=${cookieValue}; path=/;`; 
     setCurrentLang(lang);
-
-    // 3. 페이지 새로고침 (구글 번역기가 쿠키를 읽고 번역 시작)
     window.location.reload();
   };
 
@@ -105,58 +180,36 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-primary-foreground font-sans">
       
-      {/* 구글 번역기 숨김 처리 (CSS) */}
       <style jsx global>{`
-        /* 구글 번역 상단 배너 숨기기 */
         .goog-te-banner-frame { display: none !important; }
         body { top: 0 !important; }
-        /* 구글 번역 툴팁 숨기기 */
         .goog-tooltip { display: none !important; }
-        .goog-tooltip:hover { display: none !important; }
         .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
-        /* 구글 번역 위젯(콤보박스) 숨기기 */
         #google_translate_element { display: none !important; }
       `}</style>
 
-      {/* 숨겨진 구글 번역 요소 (기능 작동용) */}
       <div id="google_translate_element"></div>
 
       {/* 헤더 */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isScrolled ? "bg-background/90 backdrop-blur-md border-white/10 py-4 shadow-lg" : "bg-transparent border-transparent py-6"}`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          
           <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <Image src="/images/logo.png" alt="HYPER COMMERCE" width={200} height={60} priority className="object-contain" />
           </div>
-
           <nav className="hidden md:flex items-center gap-8">
             <button onClick={() => scrollToSection('trends')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">TRENDS</button>
             <button onClick={() => scrollToSection('why-us')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">WHY US</button>
             <button onClick={() => scrollToSection('success-story')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">SUCCESS STORIES</button>
           </nav>
-
           <div className="hidden md:flex items-center gap-6">
-            {/* ⭐ 언어 선택 버튼 (클릭 시 쿠키 설정 후 새로고침) */}
             <div className="flex items-center gap-2 bg-white/5 rounded-full p-1 border border-white/10">
-              <button 
-                onClick={() => handleLanguageChange('en')}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${currentLang === 'en' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
-              >
-                EN
-              </button>
-              <button 
-                onClick={() => handleLanguageChange('vi')}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${currentLang === 'vi' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}
-              >
-                VN
-              </button>
+              <button onClick={() => handleLanguageChange('en')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${currentLang === 'en' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}>EN</button>
+              <button onClick={() => handleLanguageChange('vi')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${currentLang === 'vi' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}>VN</button>
             </div>
-
             <button onClick={() => setIsModalOpen(true)} className="group bg-primary hover:bg-primary/90 text-black px-6 py-2.5 rounded-full font-bold transition-all flex items-center gap-2 text-sm">
               Start Project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
-
           <div className="md:hidden flex items-center gap-4">
              <div className="flex items-center gap-1">
                <button onClick={() => handleLanguageChange('en')} className={`text-xs font-bold ${currentLang === 'en' ? 'text-primary' : 'text-gray-500'}`}>EN</button>
@@ -200,7 +253,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 트렌드 섹션 */}
+      {/* 트렌드 섹션 (내 제품 슬라이드 적용) */}
       <section id="trends" className="py-20 px-6 border-t border-white/5 relative bg-gradient-to-b from-transparent to-black/50">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-12">
@@ -213,16 +266,11 @@ export default function Home() {
               <button onClick={() => scroll('right')} className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors"><ChevronRight className="w-6 h-6" /></button>
             </div>
           </div>
+          
           <div ref={scrollContainerRef} className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-6 px-6" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            {TRENDS_DATA.map((trend, idx) => (
-              <div key={trend.id} className="min-w-[280px] md:min-w-[320px] snap-center group relative rounded-2xl overflow-hidden aspect-[3/4] cursor-pointer" onMouseEnter={() => setActiveTrend(idx)}>
-                <Image src={trend.image} alt={trend.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
-                  <span className="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold mb-2 border border-primary/20 backdrop-blur-sm">{trend.tag}</span>
-                  <h3 className="text-2xl font-bold text-white mb-1">{trend.title}</h3>
-                </div>
-              </div>
+            {/* ⭐ 기존 map을 새 컴포넌트(TrendCard)로 교체 */}
+            {TRENDS_DATA.map((trend) => (
+              <TrendCard key={trend.id} item={trend} />
             ))}
           </div>
         </div>
