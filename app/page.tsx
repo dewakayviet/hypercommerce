@@ -2,10 +2,9 @@
 
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
-// 필요한 아이콘 추가 (지구본, 트로피, 건물 등)
-import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2, Globe, Trophy, Store } from "lucide-react";
+import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2, Quote } from "lucide-react";
 
-// 트렌드 데이터 (사장님 제품 + 슬라이드용 이미지)
+// ⭐ 1. 트렌드 데이터 (기존 유지)
 const TRENDS_DATA = [
   { 
     id: 1, 
@@ -39,31 +38,44 @@ const TRENDS_DATA = [
   },
 ];
 
-// ⭐ PDF 내용을 바탕으로 만든 성공 사례 데이터
-const SUCCESS_DATA = [
+// ⭐ 2. 성공 스토리 데이터 (새로운 구조!)
+const SUCCESS_STORIES = [
   {
     id: 1,
-    category: "GLOBAL EXPANSION",
-    title: "Active in Major Asian Markets",
-    desc: "Successfully expanded into Japan (Qoo10, Amazon), Vietnam, and China. We are building a strong global network beyond Korea.",
-    icon: Globe, // 지구본 아이콘
+    brand: "Glow Vietnam", // 브랜드명
+    category: "Skincare Brand",
+    image: "/images/p5-1.jpg", // (임시 사진: 나중에 실제 브랜드 사진으로 교체하세요)
+    story: {
+      challenge: "Wanted to launch a K-Beauty brand but had no connection with Korean factories.", // 시작 계기
+      solution: "Hyper Commerce managed everything from formulation to customs clearance.", // 개발 과정
+      result: "Achieved $50,000 monthly sales within 3 months of launch.", // 판매 성과
+    }
   },
   {
     id: 2,
-    category: "BEST SELLER",
-    title: "600,000 Units Sold",
-    desc: "Our signature '1.P.L Foundation' has achieved 600K cumulative sales, establishing itself as a core base makeup brand in the market.",
-    icon: Trophy, // 트로피 아이콘
+    brand: "K-Vibe Shop",
+    category: "Retail Shop",
+    image: "/images/p3-1.jpg", // (임시 사진)
+    story: {
+      challenge: "Struggled with fake products and slow shipping from other suppliers.",
+      solution: "Sourced 100% authentic products with 3-day fast shipping system.",
+      result: "Customer retention rate increased by 200%. Now opening 2nd offline store.",
+    }
   },
   {
     id: 3,
-    category: "PREMIUM CHANNELS",
-    title: "Duty-Free & Olive Young",
-    desc: "Launched in major Duty-Free shops (Lotte, Shilla) and Korea's No.1 H&B store 'Olive Young', proving our brand value.",
-    icon: Store, // 매장 아이콘
+    brand: "Pure Skin",
+    category: "Derma Brand",
+    image: "/images/p1-1.jpg", // (임시 사진)
+    story: {
+      challenge: "Needed a unique formula for sensitive skin, not just generic products.",
+      solution: "Connected with a top-tier ODM factory to create a signature recipe.",
+      result: "Sold out 5,000 units on the first day of launching.",
+    }
   }
 ];
 
+// 슬라이드 카드 컴포넌트
 const TrendCard = ({ item }: { item: any }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -120,8 +132,7 @@ export default function Home() {
   useEffect(() => {
     const cookies = document.cookie.split(';');
     const googtrans = cookies.find(c => c.trim().startsWith('googtrans='));
-    if (googtrans && googtrans.includes('/en/vi')) { setCurrentLang('vi'); } 
-    else { setCurrentLang('en'); }
+    if (googtrans && googtrans.includes('/en/vi')) { setCurrentLang('vi'); } else { setCurrentLang('en'); }
 
     const addScript = document.createElement('script');
     addScript.setAttribute('src', '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
@@ -171,6 +182,7 @@ export default function Home() {
       <style jsx global>{` .goog-te-banner-frame { display: none !important; } body { top: 0 !important; } .goog-tooltip { display: none !important; } .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; } #google_translate_element { display: none !important; } `}</style>
       <div id="google_translate_element"></div>
 
+      {/* 헤더 */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${isScrolled ? "bg-background/90 backdrop-blur-md border-white/10 py-4 shadow-lg" : "bg-transparent border-transparent py-6"}`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
@@ -203,6 +215,7 @@ export default function Home() {
         </div>
       </header>
 
+      {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-black/95 flex flex-col items-center justify-center gap-8 md:hidden backdrop-blur-xl">
           <button onClick={() => scrollToSection('trends')} className="text-3xl font-bold text-white hover:text-primary uppercase">TRENDS</button>
@@ -212,43 +225,37 @@ export default function Home() {
         </div>
       )}
 
+      {/* 히어로 섹션 */}
       <section className="relative pt-32 pb-10 md:pt-48 md:pb-20 px-6 flex flex-col items-center text-center overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
         <div className="relative z-10 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-primary text-sm font-medium mb-6 animate-fade-in-up">
           <Star className="w-3 h-3 fill-current" /> No.1 K-Beauty B2B Platform
         </div>
-        <h1 className="relative z-10 text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent max-w-5xl mx-auto leading-[1.1]">
-          Create Your Signature Brand
-        </h1>
-        <p className="relative z-10 text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          From product planning to production and export. We provide a one-stop solution for your K-Beauty business.
-        </p>
+        <h1 className="relative z-10 text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent max-w-5xl mx-auto leading-[1.1]">Create Your Signature Brand</h1>
+        <p className="relative z-10 text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">From product planning to production and export. We provide a one-stop solution for your K-Beauty business.</p>
         <div className="relative z-10 flex flex-col sm:flex-row gap-4 w-full justify-center">
-           <button onClick={() => setIsModalOpen(true)} className="bg-primary hover:bg-primary/90 text-black px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(204,253,50,0.3)]">
-             Start Free Consultation <ArrowRight className="w-5 h-5" />
-           </button>
-           <button className="px-8 py-4 rounded-full font-bold text-lg text-white border border-white/20 hover:bg-white/10 transition-all">View Success Stories</button>
+           <button onClick={() => setIsModalOpen(true)} className="bg-primary hover:bg-primary/90 text-black px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(204,253,50,0.3)]">Start Free Consultation <ArrowRight className="w-5 h-5" /></button>
+           <button onClick={() => scrollToSection('success-story')} className="px-8 py-4 rounded-full font-bold text-lg text-white border border-white/20 hover:bg-white/10 transition-all">View Success Stories</button>
         </div>
       </section>
 
+      {/* 트렌드 섹션 */}
       <section id="trends" className="py-20 px-6 border-t border-white/5 relative bg-gradient-to-b from-transparent to-black/50">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-end justify-between mb-12">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center gap-3"><span className="text-primary">01.</span> K-BEAUTY TRENDS</h2>
-              <p className="text-gray-400">Discover the hottest products in Korea right now.</p>
-            </div>
+            <div><h2 className="text-3xl md:text-4xl font-bold mb-4 flex items-center gap-3"><span className="text-primary">01.</span> K-BEAUTY TRENDS</h2><p className="text-gray-400">Discover the hottest products in Korea right now.</p></div>
             <div className="flex gap-2">
               <button onClick={() => scroll('left')} className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors"><ChevronLeft className="w-6 h-6" /></button>
               <button onClick={() => scroll('right')} className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors"><ChevronRight className="w-6 h-6" /></button>
             </div>
           </div>
           <div ref={scrollContainerRef} className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-6 px-6" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            {TRENDS_DATA.map((trend) => ( <TrendCard key={trend.id} item={trend} /> ))}
+            {TRENDS_DATA.map((trend) => (<TrendCard key={trend.id} item={trend} />))}
           </div>
         </div>
       </section>
 
+      {/* Why Us 섹션 */}
       <section id="why-us" className="py-24 px-6 relative bg-black">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -267,36 +274,58 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ⭐⭐⭐ Success Stories 섹션 (브랜드북 내용 반영 / 가로형 레이아웃) ⭐⭐⭐ */}
+      {/* ⭐ Success Stories 섹션 (가로형 리스트로 변경) */}
       <section id="success-story" className="py-24 px-6 border-t border-white/10 bg-[#0a0a0a]">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 uppercase tracking-tight">BRAND SUCCESS STORIES</h2>
-            <p className="text-gray-400">Our achievements and global expansion history.</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 uppercase">SUCCESS STORIES</h2>
+            <p className="text-gray-400">See how we helped other brands grow.</p>
           </div>
           
-          <div className="flex flex-col gap-6">
-            {SUCCESS_DATA.map((item, i) => (
-              <div key={i} className="group w-full bg-[#111] border border-white/10 p-8 md:p-10 rounded-3xl hover:border-primary/50 transition-all duration-300 hover:bg-[#151515]">
-                <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10">
-                  {/* 아이콘 영역 (왼쪽) */}
-                  <div className="shrink-0 w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <item.icon className="w-8 h-8 text-primary" />
-                  </div>
+          <div className="flex flex-col gap-8">
+            {SUCCESS_STORIES.map((story) => (
+              <div key={story.id} className="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:border-primary/50 transition-all duration-300">
+                <div className="flex flex-col md:flex-row">
                   
-                  {/* 텍스트 영역 (오른쪽) */}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                       <span className="text-xs font-bold text-primary tracking-widest uppercase border border-primary/30 px-2 py-1 rounded">{item.category}</span>
+                  {/* 왼쪽: 브랜드 이미지 (PIC) */}
+                  <div className="relative w-full md:w-2/5 min-h-[300px] md:min-h-full">
+                    <Image 
+                      src={story.image} 
+                      alt={story.brand} 
+                      fill 
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/20" />
+                    <div className="absolute top-6 left-6">
+                      <span className="bg-black/60 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold border border-white/10">
+                        {story.category}
+                      </span>
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 group-hover:text-primary transition-colors">{item.title}</h3>
-                    <p className="text-gray-400 text-lg leading-relaxed">{item.desc}</p>
                   </div>
 
-                  {/* 화살표 (장식용) */}
-                  <div className="hidden md:block text-gray-600 group-hover:text-primary group-hover:translate-x-2 transition-all">
-                    <ArrowRight className="w-6 h-6" />
+                  {/* 오른쪽: 상세 스토리 */}
+                  <div className="w-full md:w-3/5 p-8 md:p-10 flex flex-col justify-center">
+                    <h3 className="text-3xl font-bold text-white mb-2">{story.brand}</h3>
+                    <div className="w-12 h-1 bg-primary mb-6"></div>
+                    
+                    <div className="space-y-6">
+                      <div>
+                        <h4 className="text-primary text-xs font-bold uppercase mb-1 tracking-wider">01. The Challenge</h4>
+                        <p className="text-gray-300 leading-relaxed">{story.story.challenge}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-primary text-xs font-bold uppercase mb-1 tracking-wider">02. Our Solution</h4>
+                        <p className="text-gray-300 leading-relaxed">{story.story.solution}</p>
+                      </div>
+                      <div className="bg-primary/10 p-4 rounded-xl border border-primary/20">
+                        <h4 className="text-primary text-xs font-bold uppercase mb-1 tracking-wider flex items-center gap-2">
+                           <Quote className="w-3 h-3 fill-current" /> The Result
+                        </h4>
+                        <p className="text-white font-medium leading-relaxed">{story.story.result}</p>
+                      </div>
+                    </div>
                   </div>
+
                 </div>
               </div>
             ))}
@@ -304,6 +333,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 문의하기 모달 */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
@@ -334,6 +364,7 @@ export default function Home() {
         </div>
       )}
 
+      {/* 푸터 */}
       <footer className="py-12 border-t border-white/10 bg-black text-center md:text-left">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="col-span-1 md:col-span-2">
