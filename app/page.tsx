@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2, Quote } from "lucide-react";
 
-// ⭐ 1. 트렌드 데이터 (기존 유지)
+// 1. 트렌드 데이터 (기존 유지)
 const TRENDS_DATA = [
   { 
     id: 1, 
@@ -38,24 +38,27 @@ const TRENDS_DATA = [
   },
 ];
 
-// ⭐ 2. 성공 스토리 데이터 (새로운 구조!)
+// ⭐ 2. 성공 스토리 데이터 (메이크힐 실제 사례 적용!)
 const SUCCESS_STORIES = [
   {
     id: 1,
-    brand: "Glow Vietnam", // 브랜드명
-    category: "Skincare Brand",
-    image: "/images/p5-1.jpg", // (임시 사진: 나중에 실제 브랜드 사진으로 교체하세요)
+    brand: "MAKEHEAL", // 브랜드명
+    category: "Base Makeup Specialist",
+    image: "/images/makeheal.jpg", // ⚠️ 중요: 9페이지 파운데이션 사진을 이 이름으로 저장하세요!
     story: {
-      challenge: "Wanted to launch a K-Beauty brand but had no connection with Korean factories.", // 시작 계기
-      solution: "Hyper Commerce managed everything from formulation to customs clearance.", // 개발 과정
-      result: "Achieved $50,000 monthly sales within 3 months of launch.", // 판매 성과
+      // 챌린지: 글로벌 시장 확장과 품질 기준 재정립 필요
+      challenge: "Needed a strategy to expand their high-quality '1.P.L Foundation' from Korea to the global market (Vietnam, Japan).",
+      // 솔루션: 제조 파트너십을 통한 비용 절감 및 올리브영/큐텐 등 메이저 채널 진입
+      solution: "Established a direct manufacturing system to minimize costs and secured entry into major channels like Olive Young and Qoo10.",
+      // 결과: 60만 개 판매 달성, 평점 4.9점 기록
+      result: "Achieved 600,000 cumulative sales and a 4.9/5 customer rating. Successfully established as a leading K-Beauty brand.",
     }
   },
   {
     id: 2,
     brand: "K-Vibe Shop",
     category: "Retail Shop",
-    image: "/images/p3-1.jpg", // (임시 사진)
+    image: "/images/p3-1.jpg", // (기존 제품 사진 활용)
     story: {
       challenge: "Struggled with fake products and slow shipping from other suppliers.",
       solution: "Sourced 100% authentic products with 3-day fast shipping system.",
@@ -66,7 +69,7 @@ const SUCCESS_STORIES = [
     id: 3,
     brand: "Pure Skin",
     category: "Derma Brand",
-    image: "/images/p1-1.jpg", // (임시 사진)
+    image: "/images/p5-1.jpg", // (기존 제품 사진 활용)
     story: {
       challenge: "Needed a unique formula for sensitive skin, not just generic products.",
       solution: "Connected with a top-tier ODM factory to create a signature recipe.",
@@ -274,7 +277,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ⭐ Success Stories 섹션 (가로형 리스트로 변경) */}
+      {/* ⭐ Success Stories 섹션 (메이크힐 실제 스토리 적용) */}
       <section id="success-story" className="py-24 px-6 border-t border-white/10 bg-[#0a0a0a]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
