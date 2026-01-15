@@ -290,17 +290,18 @@ export default function Home() {
               <div key={story.id} className="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:border-primary/50 transition-all duration-300">
                 <div className="flex flex-col md:flex-row">
                   
-                  {/* 왼쪽: 브랜드 이미지 (PIC) */}
-                  <div className="relative w-full md:w-2/5 min-h-[300px] md:min-h-full">
+                  {/* 왼쪽: 브랜드 이미지 (수정된 버전) */}
+                  <div className="relative w-full md:w-2/5 min-h-[300px] md:min-h-full bg-white flex items-center justify-center">
                     <Image 
                       src={story.image} 
                       alt={story.brand} 
                       fill 
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="object-contain p-6 transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-black/20" />
+                    {/* (어두운 막 제거함 - 제품 사진을 깨끗하게 보여주기 위해) */}
+                    
                     <div className="absolute top-6 left-6">
-                      <span className="bg-black/60 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold border border-white/10">
+                      <span className="bg-black/80 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold border border-white/10 shadow-lg">
                         {story.category}
                       </span>
                     </div>
