@@ -67,13 +67,16 @@ const SUCCESS_STORIES = [
   {
     id: 3,
     type: "image",
-    brand: "Pure Skin",
-    category: "Derma Brand",
-    src: "/images/p5-1.jpg",
+    brand: "Your Brand", // 브랜드명: 당신의 브랜드
+    category: "Next Global Success", // 카테고리: 다음 성공 신화
+    src: "/images/your-turn.jpg", // ⚠️ 이미지 파일을 'your-turn.jpg'로 저장해서 넣어주세요! (없으면 기존 p5-1.jpg 등 사용)
     story: {
-      challenge: "Needed a unique formula for sensitive skin, not just generic products.",
-      solution: "Connected with a top-tier ODM factory to create a signature recipe.",
-      result: "Sold out 5,000 units on the first day of launching.",
+      // 1. "이제는 당신 차례입니다."
+      challenge: "Now it's your turn. We are ready to listen to your vision.", 
+      // 2. "당신의 성공스토리를 만들어보세요."
+      solution: "Create your own success story with Hyper Commerce. From concept to launch, we are with you.", 
+      // 3. "아이디어가 있다면 주저하지 말고 연락하세요."
+      result: "If you have an idea, don't hesitate to contact us. Let's make it happen together.",
     }
   }
 ];
