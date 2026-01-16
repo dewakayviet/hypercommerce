@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2, Quote } from "lucide-react";
 
-// 1. 트렌드 데이터 (기존 유지)
+// 1. 트렌드 데이터
 const TRENDS_DATA = [
   { 
     id: 1, 
@@ -38,38 +38,38 @@ const TRENDS_DATA = [
   },
 ];
 
-// ⭐ 2. 성공 스토리 데이터 (메이크힐 실제 사례 적용!)
+// ⭐ 2. 성공 스토리 데이터 (동영상 지원 기능 추가!)
 const SUCCESS_STORIES = [
   {
     id: 1,
-    brand: "MAKEHEAL", // 브랜드명
+    type: "image", // 👈 얘는 이미지
+    brand: "MAKEHEAL",
     category: "Base Makeup Specialist",
-    image: "/images/makeheal.jpg", // ⚠️ 중요: 9페이지 파운데이션 사진을 이 이름으로 저장하세요!
+    src: "/images/makeheal.jpg", 
     story: {
-      // 챌린지: 글로벌 시장 확장과 품질 기준 재정립 필요
       challenge: "Needed a strategy to expand their high-quality '1.P.L Foundation' from Korea to the global market (Vietnam, Japan).",
-      // 솔루션: 제조 파트너십을 통한 비용 절감 및 올리브영/큐텐 등 메이저 채널 진입
       solution: "Established a direct manufacturing system to minimize costs and secured entry into major channels like Olive Young and Qoo10.",
-      // 결과: 60만 개 판매 달성, 평점 4.9점 기록
       result: "Achieved 600,000 cumulative sales and a 4.9/5 customer rating. Successfully established as a leading K-Beauty brand.",
     }
   },
   {
     id: 2,
-    brand: "K-Vibe Shop",
-    category: "Retail Shop",
-    image: "/images/p3-1.jpg", // (기존 제품 사진 활용)
+    type: "video", // 👈 ⭐ 얘는 동영상! (미라클레어)
+    brand: "Miraclair",
+    category: "Hair Loss Care",
+    src: "/videos/miraclair.mp4", // ⚠️ public/videos/miraclair.mp4 파일 필요
     story: {
-      challenge: "Struggled with fake products and slow shipping from other suppliers.",
-      solution: "Sourced 100% authentic products with 3-day fast shipping system.",
-      result: "Customer retention rate increased by 200%. Now opening 2nd offline store.",
+      challenge: "The hair loss market is saturated. Needed to prove efficacy and secure trust in a highly competitive online/offline market.",
+      solution: "Launched 'Monheur Anti-Hair Loss Shampoo' with patented NF Complex. Focused on verified reviews and live home shopping channels.",
+      result: "Ranked #1 on Naver & Coupang. Achieved #2 weekly sales on Hyundai Home Shopping, proving its market dominance.",
     }
   },
   {
     id: 3,
+    type: "image",
     brand: "Pure Skin",
     category: "Derma Brand",
-    image: "/images/p5-1.jpg", // (기존 제품 사진 활용)
+    src: "/images/p5-1.jpg",
     story: {
       challenge: "Needed a unique formula for sensitive skin, not just generic products.",
       solution: "Connected with a top-tier ODM factory to create a signature recipe.",
@@ -277,7 +277,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ⭐ Success Stories 섹션 (메이크힐 실제 스토리 적용) */}
+      {/* ⭐ Success Stories 섹션 (동영상 + 이미지 복합 기능) */}
       <section id="success-story" className="py-24 px-6 border-t border-white/10 bg-[#0a0a0a]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -286,20 +286,33 @@ export default function Home() {
           </div>
           
           <div className="flex flex-col gap-8">
-            {SUCCESS_STORIES.map((story) => (
+            {SUCCESS_STORIES.map((story: any) => (
               <div key={story.id} className="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:border-primary/50 transition-all duration-300">
                 <div className="flex flex-col md:flex-row">
                   
-                  {/* 왼쪽: 브랜드 이미지 (수정된 버전) */}
-                  <div className="relative w-full md:w-2/5 min-h-[300px] md:min-h-full bg-white flex items-center justify-center">
-                    <Image 
-                      src={story.image} 
-                      alt={story.brand} 
-                      fill 
-                      className="object-contain p-6 transition-transform duration-700 group-hover:scale-105"
-                    />
-                    {/* (어두운 막 제거함 - 제품 사진을 깨끗하게 보여주기 위해) */}
+                  {/* 왼쪽: 미디어 영역 (비디오 또는 이미지) */}
+                  <div className="relative w-full md:w-2/5 min-h-[300px] md:min-h-full bg-white flex items-center justify-center overflow-hidden">
                     
+                    {/* ⭐ 동영상이면 video 태그, 아니면 Image 태그 사용 */}
+                    {story.type === 'video' ? (
+                      <video 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline 
+                        className="w-full h-full object-cover" 
+                      >
+                        <source src={story.src} type="video/mp4" />
+                      </video>
+                    ) : (
+                      <Image 
+                        src={story.src} 
+                        alt={story.brand} 
+                        fill 
+                        className="object-contain p-6 transition-transform duration-700 group-hover:scale-105"
+                      />
+                    )}
+
                     <div className="absolute top-6 left-6">
                       <span className="bg-black/80 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold border border-white/10 shadow-lg">
                         {story.category}
