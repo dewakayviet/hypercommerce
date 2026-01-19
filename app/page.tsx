@@ -180,7 +180,30 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => { setIsSubmitting(false); setSubmitStatus('success'); setEmail(""); setTimeout(() => { setIsModalOpen(false); setSubmitStatus('idle'); }, 3000); }, 1500);
+
+    try {
+      // 1. 서버(API)로 데이터 전송
+      const res = await fetch('/api/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }), // 고객이 입력한 이메일 보냄
+      });
+
+      if (res.ok) {
+        // 성공 시
+        setSubmitStatus('success');
+        setEmail("");
+        setTimeout(() => { setIsModalOpen(false); setSubmitStatus('idle'); }, 3000);
+      } else {
+        // 실패 시
+        alert("전송에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("오류가 발생했습니다.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
