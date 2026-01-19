@@ -38,11 +38,11 @@ const TRENDS_DATA = [
   },
 ];
 
-// ⭐ 2. 성공 스토리 데이터 (동영상 지원 기능 추가!)
+// 2. 성공 스토리 데이터
 const SUCCESS_STORIES = [
   {
     id: 1,
-    type: "image", // 👈 얘는 이미지
+    type: "image",
     brand: "MAKEHEAL",
     category: "Base Makeup Specialist",
     src: "/images/makeheal.jpg", 
@@ -54,10 +54,10 @@ const SUCCESS_STORIES = [
   },
   {
     id: 2,
-    type: "video", // 👈 ⭐ 얘는 동영상! (미라클레어)
+    type: "video",
     brand: "Miraclair",
     category: "Hair Loss Care",
-    src: "/videos/miraclair.mp4", // ⚠️ public/videos/miraclair.mp4 파일 필요
+    src: "/videos/miraclair.mp4", 
     story: {
       challenge: "The hair loss market is saturated. Needed to prove efficacy and secure trust in a highly competitive online/offline market.",
       solution: "Launched 'Monheur Anti-Hair Loss Shampoo' with patented NF Complex. Focused on verified reviews and live home shopping channels.",
@@ -67,15 +67,12 @@ const SUCCESS_STORIES = [
   {
     id: 3,
     type: "image",
-    brand: "Your Brand", // 브랜드명: 당신의 브랜드
-    category: "Next Global Success", // 카테고리: 다음 성공 신화
-    src: "/images/your-turn.jpg", // ⚠️ 이미지 파일을 'your-turn.jpg'로 저장해서 넣어주세요! (없으면 기존 p5-1.jpg 등 사용)
+    brand: "Your Brand",
+    category: "Next Global Success",
+    src: "/images/your-turn.jpg", 
     story: {
-      // 1. "이제는 당신 차례입니다."
       challenge: "Now it's your turn. We are ready to listen to your vision.", 
-      // 2. "당신의 성공스토리를 만들어보세요."
       solution: "Create your own success story with Hyper Commerce. From concept to launch, we are with you.", 
-      // 3. "아이디어가 있다면 주저하지 말고 연락하세요."
       result: "If you have an idea, don't hesitate to contact us. Let's make it happen together.",
     }
   }
@@ -130,7 +127,16 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentLang, setCurrentLang] = useState('en'); 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [email, setEmail] = useState("");
+  
+  // ⭐ [수정됨] 폼 데이터 상태 (이름, 이메일, 폰, 카테고리, 메시지)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    category: 'Distribution (유통)',
+    message: ''
+  });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -177,30 +183,36 @@ export default function Home() {
     }
   };
 
+  // ⭐ [수정됨] 폼 입력 핸들러
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // 1. 서버(API)로 데이터 전송
       const res = await fetch('/api/email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }), // 고객이 입력한 이메일 보냄
+        body: JSON.stringify(formData), // ⭐ 모든 데이터 전송
       });
 
+      const result = await res.json();
+
       if (res.ok) {
-        // 성공 시
         setSubmitStatus('success');
-        setEmail("");
+        // 폼 초기화
+        setFormData({ name: '', email: '', phone: '', category: 'Distribution (유통)', message: '' });
         setTimeout(() => { setIsModalOpen(false); setSubmitStatus('idle'); }, 3000);
       } else {
-        // 실패 시
-        alert("전송에 실패했습니다. 다시 시도해주세요.");
+        alert(`전송 실패 원인: ${result.error || "알 수 없는 오류"}`);
       }
     } catch (error) {
       console.error(error);
-      alert("오류가 발생했습니다.");
+      alert("네트워크 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
     }
@@ -303,7 +315,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ⭐ Success Stories 섹션 (동영상 + 이미지 복합 기능) */}
+      {/* ⭐ Success Stories 섹션 */}
       <section id="success-story" className="py-24 px-6 border-t border-white/10 bg-[#0a0a0a]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -318,27 +330,13 @@ export default function Home() {
                   
                   {/* 왼쪽: 미디어 영역 (비디오 또는 이미지) */}
                   <div className="relative w-full md:w-2/5 min-h-[300px] md:min-h-full bg-white flex items-center justify-center overflow-hidden">
-                    
-                    {/* ⭐ 동영상이면 video 태그, 아니면 Image 태그 사용 */}
                     {story.type === 'video' ? (
-                      <video 
-                        autoPlay 
-                        loop 
-                        muted 
-                        playsInline 
-                        className="w-full h-full object-cover" 
-                      >
+                      <video autoPlay loop muted playsInline className="w-full h-full object-cover">
                         <source src={story.src} type="video/mp4" />
                       </video>
                     ) : (
-                      <Image 
-                        src={story.src} 
-                        alt={story.brand} 
-                        fill 
-                        className="object-contain p-6 transition-transform duration-700 group-hover:scale-105"
-                      />
+                      <Image src={story.src} alt={story.brand} fill className="object-contain p-6 transition-transform duration-700 group-hover:scale-105" />
                     )}
-
                     <div className="absolute top-6 left-6">
                       <span className="bg-black/80 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold border border-white/10 shadow-lg">
                         {story.category}
@@ -350,20 +348,11 @@ export default function Home() {
                   <div className="w-full md:w-3/5 p-8 md:p-10 flex flex-col justify-center">
                     <h3 className="text-3xl font-bold text-white mb-2">{story.brand}</h3>
                     <div className="w-12 h-1 bg-primary mb-6"></div>
-                    
                     <div className="space-y-6">
-                      <div>
-                        <h4 className="text-primary text-xs font-bold uppercase mb-1 tracking-wider">01. The Challenge</h4>
-                        <p className="text-gray-300 leading-relaxed">{story.story.challenge}</p>
-                      </div>
-                      <div>
-                        <h4 className="text-primary text-xs font-bold uppercase mb-1 tracking-wider">02. Our Solution</h4>
-                        <p className="text-gray-300 leading-relaxed">{story.story.solution}</p>
-                      </div>
+                      <div><h4 className="text-primary text-xs font-bold uppercase mb-1 tracking-wider">01. The Challenge</h4><p className="text-gray-300 leading-relaxed">{story.story.challenge}</p></div>
+                      <div><h4 className="text-primary text-xs font-bold uppercase mb-1 tracking-wider">02. Our Solution</h4><p className="text-gray-300 leading-relaxed">{story.story.solution}</p></div>
                       <div className="bg-primary/10 p-4 rounded-xl border border-primary/20">
-                        <h4 className="text-primary text-xs font-bold uppercase mb-1 tracking-wider flex items-center gap-2">
-                           <Quote className="w-3 h-3 fill-current" /> The Result
-                        </h4>
+                        <h4 className="text-primary text-xs font-bold uppercase mb-1 tracking-wider flex items-center gap-2"><Quote className="w-3 h-3 fill-current" /> The Result</h4>
                         <p className="text-white font-medium leading-relaxed">{story.story.result}</p>
                       </div>
                     </div>
@@ -376,29 +365,62 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 문의하기 모달 */}
+      {/* ⭐ [수정됨] 문의하기 모달 (완전체 양식) */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
-          <div className="relative bg-[#111] border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl animate-fade-in-up">
+          <div className="relative bg-[#111] border border-white/10 rounded-2xl p-8 max-w-md w-full shadow-2xl animate-fade-in-up max-h-[90vh] overflow-y-auto">
             <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-white"><X className="w-6 h-6" /></button>
+            
             {submitStatus === 'success' ? (
                <div className="text-center py-10">
                  <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4"><User className="w-8 h-8 text-green-500" /></div>
                  <h3 className="text-2xl font-bold text-white mb-2">Thank you!</h3>
-                 <p className="text-gray-400">We will contact you shortly via email.</p>
+                 <p className="text-gray-400">We will contact you shortly.</p>
                </div>
             ) : (
               <>
                 <h3 className="text-2xl font-bold mb-2">Start Your Business</h3>
-                <p className="text-gray-400 mb-6 text-sm">Leave your email, and our manager will send you the catalog.</p>
+                <p className="text-gray-400 mb-6 text-sm">Tell us about your project.</p>
+                
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* 1. 이름 */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email Address</label>
-                    <input type="email" required placeholder="ceo@company.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" />
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Your Name *</label>
+                    <input name="name" type="text" required value={formData.name} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="John Doe" />
                   </div>
-                  <button type="submit" disabled={isSubmitting} className="w-full bg-primary text-black font-bold py-3.5 rounded-lg hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
-                    {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Get Free Consultation"}
+
+                  {/* 2. 연락처 */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Phone Number *</label>
+                    <input name="phone" type="tel" required value={formData.phone} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="+82 10-1234-5678" />
+                  </div>
+
+                  {/* 3. 이메일 */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email Address *</label>
+                    <input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="ceo@company.com" />
+                  </div>
+
+                  {/* 4. 관심 카테고리 (드롭다운) */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Interested In</label>
+                    <select name="category" value={formData.category} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors">
+                      <option value="Distribution (유통)">Distribution (Sourcing)</option>
+                      <option value="OEM/ODM (제조)">OEM/ODM (Manufacturing)</option>
+                      <option value="Bulk Wholesale">Bulk Wholesale</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  {/* 5. 문의 내용 (메시지) */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Message</label>
+                    <textarea name="message" rows={3} value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="Tell us more about your needs..." />
+                  </div>
+
+                  <button type="submit" disabled={isSubmitting} className="w-full bg-primary text-black font-bold py-3.5 rounded-lg hover:bg-primary/90 transition-all flex items-center justify-center gap-2 mt-2">
+                    {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send Inquiry"}
                   </button>
                 </form>
               </>
