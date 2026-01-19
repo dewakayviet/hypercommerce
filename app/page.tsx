@@ -402,14 +402,20 @@ export default function Home() {
                     <input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="ceo@company.com" />
                   </div>
 
-                  {/* 4. 관심 카테고리 (드롭다운) */}
+                  {/* 4. 관심 카테고리 (수정됨: 글씨 검은색으로 변경) */}
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Interested In</label>
-                    <select name="category" value={formData.category} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors">
-                      <option value="Distribution (유통)">Distribution (Sourcing)</option>
-                      <option value="OEM/ODM (제조)">OEM/ODM (Manufacturing)</option>
-                      <option value="Bulk Wholesale">Bulk Wholesale</option>
-                      <option value="Other">Other</option>
+                    <select 
+                      name="category" 
+                      value={formData.category} 
+                      onChange={handleInputChange} 
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
+                    >
+                      {/* 👇 여기 className="text-black" 추가! */}
+                      <option value="Distribution (유통)" className="text-black">Distribution (Sourcing)</option>
+                      <option value="OEM/ODM (제조)" className="text-black">OEM/ODM (Manufacturing)</option>
+                      <option value="Bulk Wholesale" className="text-black">Bulk Wholesale</option>
+                      <option value="Other" className="text-black">Other</option>
                     </select>
                   </div>
 
