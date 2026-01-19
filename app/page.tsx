@@ -450,3 +450,4 @@ export default function Home() {
     </div>
   );
 }
+// 이메일 설정 적용을 위한 재배포
