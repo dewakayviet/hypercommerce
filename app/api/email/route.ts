@@ -4,11 +4,17 @@ import nodemailer from 'nodemailer';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, phone, category, message } = body; // 5가지 정보 받기
+    const { name, email, phone, category, message } = body;
 
-    // 환경변수 확인 (디버깅용)
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      throw new Error("환경변수(아이디/비번)가 설정되지 않았습니다.");
+    // 🔍 환경변수 상태를 직접 확인해서 알려주는 코드
+    const debugUser = process.env.EMAIL_USER;
+    const debugPass = process.env.EMAIL_PASS;
+
+    // 하나라도 없으면 상세 내용을 범인으로 지목해서 에러 발생
+    if (!debugUser || !debugPass) {
+      const errorMsg = `[진단결과] 아이디: ${debugUser ? '있음(OK)' : '없음(NULL)'}, 비번: ${debugPass ? '있음(OK)' : '없음(NULL)'}`;
+      console.error(errorMsg); // Vercel 로그용
+      throw new Error(errorMsg); // 화면 알림용
     }
 
     const transporter = nodemailer.createTransport({
@@ -16,36 +22,30 @@ export async function POST(request: Request) {
       port: 465,
       secure: true,
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: debugUser,
+        pass: debugPass,
       },
-      connectionTimeout: 5000, 
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER,
-      subject: `[문의] ${name}님의 새로운 상담 신청이 도착했습니다!`,
-      // 메일 본문 디자인
+      from: debugUser,
+      to: debugUser,
+      subject: `[문의] ${name}님의 새로운 상담 신청`,
       html: `
-        <div style="padding: 20px; border: 1px solid #ccc; border-radius: 10px; font-family: Arial, sans-serif;">
-          <h2 style="color: #CCFD32; background-color: #000; padding: 10px; border-radius: 5px;">🚀 새로운 비즈니스 문의</h2>
-          <p><strong>성함:</strong> ${name}</p>
-          <p><strong>이메일:</strong> ${email}</p>
-          <p><strong>연락처:</strong> ${phone}</p>
-          <p><strong>관심 분야:</strong> ${category}</p>
-          <hr>
-          <h3>문의 내용:</h3>
-          <p style="white-space: pre-wrap;">${message}</p>
-        </div>
+        <h2>🚀 새로운 비즈니스 문의</h2>
+        <p><strong>성함:</strong> ${name}</p>
+        <p><strong>이메일:</strong> ${email}</p>
+        <p><strong>연락처:</strong> ${phone}</p>
+        <p><strong>관심 분야:</strong> ${category}</p>
+        <hr>
+        <p>${message}</p>
       `,
     };
 
     await transporter.sendMail(mailOptions);
-    return NextResponse.json({ message: '메일 전송 성공' }, { status: 200 });
+    return NextResponse.json({ message: '성공' }, { status: 200 });
 
   } catch (error: any) {
-    console.error('❌ 메일 전송 실패(상세):', error);
-    return NextResponse.json({ message: '메일 전송 실패', error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
