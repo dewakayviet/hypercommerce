@@ -227,12 +227,30 @@ export default function Home() {
           <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
             <Image src="/images/logo.png" alt="HYPER COMMERCE" width={200} height={60} priority className="object-contain" />
           </div>
+          
           <nav className="hidden md:flex items-center gap-8">
             <button onClick={() => scrollToSection('trends')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">TRENDS</button>
             <button onClick={() => scrollToSection('why-us')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">WHY US</button>
             <button onClick={() => scrollToSection('success-story')} className="text-sm font-medium hover:text-primary transition-colors uppercase tracking-wider text-gray-300">SUCCESS STORIES</button>
           </nav>
+
           <div className="hidden md:flex items-center gap-6">
+            {/* ⭐ 상단 소셜 아이콘 추가됨 (구분선과 함께 배치) */}
+            <div className="flex items-center gap-4 border-r border-white/10 pr-6 mr-2">
+               {/* FB */}
+               <a href="https://www.facebook.com/share/1BpPUMPfaQ/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#1877F2] transition-colors">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+               </a>
+               {/* TikTok */}
+               <a href="https://www.tiktok.com/@hypercommerce_2025?_r=1&_t=ZS-9377u8D20Bh" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+               </a>
+               {/* X */}
+               <a href="https://x.com/hypercommerce_?s=21" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+               </a>
+            </div>
+
             <div className="flex items-center gap-2 bg-white/5 rounded-full p-1 border border-white/10">
               <button onClick={() => handleLanguageChange('en')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${currentLang === 'en' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}>EN</button>
               <button onClick={() => handleLanguageChange('vi')} className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${currentLang === 'vi' ? 'bg-primary text-black shadow-lg' : 'text-gray-400 hover:text-white'}`}>VN</button>
@@ -241,6 +259,7 @@ export default function Home() {
               Start Project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
+          
           <div className="md:hidden flex items-center gap-4">
              <div className="flex items-center gap-1">
                <button onClick={() => handleLanguageChange('en')} className={`text-xs font-bold ${currentLang === 'en' ? 'text-primary' : 'text-gray-500'}`}>EN</button>
@@ -254,13 +273,21 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 모바일 메뉴 */}
+      {/* 모바일 메뉴 (SNS 추가) */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-black/95 flex flex-col items-center justify-center gap-8 md:hidden backdrop-blur-xl">
           <button onClick={() => scrollToSection('trends')} className="text-3xl font-bold text-white hover:text-primary uppercase">TRENDS</button>
           <button onClick={() => scrollToSection('why-us')} className="text-3xl font-bold text-white hover:text-primary uppercase">WHY US</button>
           <button onClick={() => scrollToSection('success-story')} className="text-3xl font-bold text-white hover:text-primary uppercase">SUCCESS STORIES</button>
-          <button onClick={() => { setIsModalOpen(true); setIsMobileMenuOpen(false); }} className="bg-primary text-black text-xl px-8 py-3 rounded-full font-bold mt-4">Start Project</button>
+          
+          {/* 모바일 메뉴용 SNS 아이콘 */}
+          <div className="flex gap-6 mt-4 mb-4">
+             <a href="https://www.facebook.com/share/1BpPUMPfaQ/?mibextid=wwXIfr" className="text-gray-400 hover:text-[#1877F2]"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+             <a href="https://www.tiktok.com/@hypercommerce_2025?_r=1&_t=ZS-9377u8D20Bh" className="text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg></a>
+             <a href="https://x.com/hypercommerce_?s=21" className="text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+          </div>
+
+          <button onClick={() => { setIsModalOpen(true); setIsMobileMenuOpen(false); }} className="bg-primary text-black text-xl px-8 py-3 rounded-full font-bold">Start Project</button>
         </div>
       )}
 
@@ -400,7 +427,7 @@ export default function Home() {
                     <input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="ceo@company.com" />
                   </div>
 
-                  {/* 4. 관심 카테고리 (글씨 검은색 처리됨) */}
+                  {/* 4. 관심 카테고리 */}
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Interested In</label>
                     <select name="category" value={formData.category} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors">
@@ -427,26 +454,21 @@ export default function Home() {
         </div>
       )}
 
-      {/* 푸터 (Registration No 삭제됨 ⭐) */}
+      {/* 푸터 */}
       <footer className="py-12 border-t border-white/10 bg-black text-center md:text-left">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="col-span-1 md:col-span-2">
              <div className="flex items-center gap-2 justify-center md:justify-start mb-4"><Image src="/images/logo.png" alt="HYPER COMMERCE" width={150} height={45} className="object-contain" /></div>
              <p className="text-gray-500 text-sm max-w-sm mx-auto md:mx-0 mb-6">Seoul, Korea | Ho Chi Minh, Vietnam<br/>contact@hypercommerce.site</p>
              
-             {/* 소셜 미디어 아이콘 영역 */}
+             {/* 하단에도 아이콘 유지 (노출 극대화) */}
              <div className="flex items-center justify-center md:justify-start gap-4">
-               {/* Facebook */}
                <a href="https://www.facebook.com/share/1BpPUMPfaQ/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-all text-gray-400">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-facebook"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                </a>
-               
-               {/* TikTok */}
                <a href="https://www.tiktok.com/@hypercommerce_2025?_r=1&_t=ZS-9377u8D20Bh" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-all text-gray-400">
                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
                </a>
-
-               {/* X (Twitter) */}
                <a href="https://x.com/hypercommerce_?s=21" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-black hover:border hover:border-white transition-all text-gray-400">
                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                </a>
