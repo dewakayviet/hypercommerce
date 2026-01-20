@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
-// ⭐ 여기가 핵심입니다! (이 줄이 없으면 환경변수를 못 읽을 때가 있습니다)
+// ⭐ 이 줄은 꼭 유지해주세요! (서버가 변수를 매번 새로 읽게 함)
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
@@ -9,14 +9,14 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { name, email, phone, category, message } = body;
 
-    // 🔍 환경변수 진단 (이제는 무조건 읽힐 겁니다!)
-    const debugUser = "contact@hypercommerce.site";
-    const debugPass = "cyajqxnvmgmyggmy";
+    // ⭐ [수정] 새로운 환경변수 이름으로 교체! (GMAIL_USER, GMAIL_PASS)
+    const myId = process.env.GMAIL_USER;
+    const myPass = process.env.GMAIL_PASS;
 
-    if (!debugUser || !debugPass) {
-      const errorMsg = `[진단결과] 아이디: ${debugUser ? '있음' : '없음'}, 비번: ${debugPass ? '있음' : '없음'}`;
-      console.error(errorMsg);
-      throw new Error(errorMsg);
+    // 환경변수 확인 (디버깅용 - 배포 후 잘 되면 나중에 지워도 됨)
+    if (!myId || !myPass) {
+      console.error(`[오류] 아이디(${myId ? '있음' : '없음'}), 비번(${myPass ? '있음' : '없음'})`);
+      throw new Error("Vercel에서 환경변수를 못 가져오고 있습니다.");
     }
 
     const transporter = nodemailer.createTransport({
@@ -24,14 +24,14 @@ export async function POST(request: Request) {
       port: 465,
       secure: true,
       auth: {
-        user: debugUser,
-        pass: debugPass,
+        user: myId,   // 바뀐 변수 사용
+        pass: myPass, // 바뀐 변수 사용
       },
     });
 
     const mailOptions = {
-      from: debugUser,
-      to: debugUser,
+      from: myId,
+      to: myId,
       subject: `[문의] ${name}님의 새로운 상담 신청`,
       html: `
         <h2>🚀 새로운 비즈니스 문의</h2>
