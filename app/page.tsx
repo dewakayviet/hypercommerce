@@ -400,7 +400,7 @@ export default function Home() {
                     <input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="ceo@company.com" />
                   </div>
 
-                  {/* 4. 관심 카테고리 (글씨 검은색 처리) */}
+                  {/* 4. 관심 카테고리 (글씨 검은색 처리됨) */}
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Interested In</label>
                     <select name="category" value={formData.category} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors">
@@ -427,26 +427,26 @@ export default function Home() {
         </div>
       )}
 
-      {/* 푸터 (소셜 아이콘 추가됨 ⭐) */}
+      {/* 푸터 (Registration No 삭제됨 ⭐) */}
       <footer className="py-12 border-t border-white/10 bg-black text-center md:text-left">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="col-span-1 md:col-span-2">
              <div className="flex items-center gap-2 justify-center md:justify-start mb-4"><Image src="/images/logo.png" alt="HYPER COMMERCE" width={150} height={45} className="object-contain" /></div>
-             <p className="text-gray-500 text-sm max-w-sm mx-auto md:mx-0 mb-6">Seoul, Korea | Ho Chi Minh, Vietnam<br/>Registration No: 123-45-67890<br/>contact@hypercommerce.site</p>
+             <p className="text-gray-500 text-sm max-w-sm mx-auto md:mx-0 mb-6">Seoul, Korea | Ho Chi Minh, Vietnam<br/>contact@hypercommerce.site</p>
              
-             {/* ⭐ 소셜 미디어 아이콘 영역 */}
+             {/* 소셜 미디어 아이콘 영역 */}
              <div className="flex items-center justify-center md:justify-start gap-4">
-               {/* 1. Facebook */}
+               {/* Facebook */}
                <a href="https://www.facebook.com/share/1BpPUMPfaQ/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-all text-gray-400">
                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-facebook"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                </a>
                
-               {/* 2. TikTok */}
+               {/* TikTok */}
                <a href="https://www.tiktok.com/@hypercommerce_2025?_r=1&_t=ZS-9377u8D20Bh" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-all text-gray-400">
                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
                </a>
 
-               {/* 3. X (Twitter) */}
+               {/* X (Twitter) */}
                <a href="https://x.com/hypercommerce_?s=21" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-black hover:border hover:border-white transition-all text-gray-400">
                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                </a>
