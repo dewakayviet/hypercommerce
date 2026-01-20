@@ -1,20 +1,22 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+// ⭐ 여기가 핵심입니다! (이 줄이 없으면 환경변수를 못 읽을 때가 있습니다)
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { name, email, phone, category, message } = body;
 
-    // 🔍 환경변수 상태를 직접 확인해서 알려주는 코드
+    // 🔍 환경변수 진단 (이제는 무조건 읽힐 겁니다!)
     const debugUser = process.env.EMAIL_USER;
     const debugPass = process.env.EMAIL_PASS;
 
-    // 하나라도 없으면 상세 내용을 범인으로 지목해서 에러 발생
     if (!debugUser || !debugPass) {
-      const errorMsg = `[진단결과] 아이디: ${debugUser ? '있음(OK)' : '없음(NULL)'}, 비번: ${debugPass ? '있음(OK)' : '없음(NULL)'}`;
-      console.error(errorMsg); // Vercel 로그용
-      throw new Error(errorMsg); // 화면 알림용
+      const errorMsg = `[진단결과] 아이디: ${debugUser ? '있음' : '없음'}, 비번: ${debugPass ? '있음' : '없음'}`;
+      console.error(errorMsg);
+      throw new Error(errorMsg);
     }
 
     const transporter = nodemailer.createTransport({
