@@ -128,7 +128,7 @@ export default function Home() {
   const [currentLang, setCurrentLang] = useState('en'); 
   const [isModalOpen, setIsModalOpen] = useState(false);
   
-  // ⭐ [수정됨] 폼 데이터 상태 (이름, 이메일, 폰, 카테고리, 메시지)
+  // 폼 데이터 상태
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -183,7 +183,6 @@ export default function Home() {
     }
   };
 
-  // ⭐ [수정됨] 폼 입력 핸들러
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -197,14 +196,13 @@ export default function Home() {
       const res = await fetch('/api/email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData), // ⭐ 모든 데이터 전송
+        body: JSON.stringify(formData),
       });
 
       const result = await res.json();
 
       if (res.ok) {
         setSubmitStatus('success');
-        // 폼 초기화
         setFormData({ name: '', email: '', phone: '', category: 'Distribution (유통)', message: '' });
         setTimeout(() => { setIsModalOpen(false); setSubmitStatus('idle'); }, 3000);
       } else {
@@ -315,7 +313,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ⭐ Success Stories 섹션 */}
+      {/* Success Stories 섹션 */}
       <section id="success-story" className="py-24 px-6 border-t border-white/10 bg-[#0a0a0a]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -328,7 +326,7 @@ export default function Home() {
               <div key={story.id} className="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:border-primary/50 transition-all duration-300">
                 <div className="flex flex-col md:flex-row">
                   
-                  {/* 왼쪽: 미디어 영역 (비디오 또는 이미지) */}
+                  {/* 왼쪽: 미디어 영역 */}
                   <div className="relative w-full md:w-2/5 min-h-[300px] md:min-h-full bg-white flex items-center justify-center overflow-hidden">
                     {story.type === 'video' ? (
                       <video autoPlay loop muted playsInline className="w-full h-full object-cover">
@@ -365,7 +363,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ⭐ [수정됨] 문의하기 모달 (완전체 양식) */}
+      {/* 문의하기 모달 */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
@@ -402,16 +400,10 @@ export default function Home() {
                     <input name="email" type="email" required value={formData.email} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="ceo@company.com" />
                   </div>
 
-                  {/* 4. 관심 카테고리 (수정됨: 글씨 검은색으로 변경) */}
+                  {/* 4. 관심 카테고리 (글씨 검은색 처리) */}
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Interested In</label>
-                    <select 
-                      name="category" 
-                      value={formData.category} 
-                      onChange={handleInputChange} 
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors"
-                    >
-                      {/* 👇 여기 className="text-black" 추가! */}
+                    <select name="category" value={formData.category} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors">
                       <option value="Distribution (유통)" className="text-black">Distribution (Sourcing)</option>
                       <option value="OEM/ODM (제조)" className="text-black">OEM/ODM (Manufacturing)</option>
                       <option value="Bulk Wholesale" className="text-black">Bulk Wholesale</option>
@@ -419,7 +411,7 @@ export default function Home() {
                     </select>
                   </div>
 
-                  {/* 5. 문의 내용 (메시지) */}
+                  {/* 5. 문의 내용 */}
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Message</label>
                     <textarea name="message" rows={3} value={formData.message} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-primary transition-colors" placeholder="Tell us more about your needs..." />
@@ -435,12 +427,30 @@ export default function Home() {
         </div>
       )}
 
-      {/* 푸터 */}
+      {/* 푸터 (소셜 아이콘 추가됨 ⭐) */}
       <footer className="py-12 border-t border-white/10 bg-black text-center md:text-left">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="col-span-1 md:col-span-2">
              <div className="flex items-center gap-2 justify-center md:justify-start mb-4"><Image src="/images/logo.png" alt="HYPER COMMERCE" width={150} height={45} className="object-contain" /></div>
-             <p className="text-gray-500 text-sm max-w-sm mx-auto md:mx-0">Seoul, Korea | Ho Chi Minh, Vietnam<br/>Registration No: 123-45-67890<br/>contact@hypercommerce.site</p>
+             <p className="text-gray-500 text-sm max-w-sm mx-auto md:mx-0 mb-6">Seoul, Korea | Ho Chi Minh, Vietnam<br/>Registration No: 123-45-67890<br/>contact@hypercommerce.site</p>
+             
+             {/* ⭐ 소셜 미디어 아이콘 영역 */}
+             <div className="flex items-center justify-center md:justify-start gap-4">
+               {/* 1. Facebook */}
+               <a href="https://www.facebook.com/share/1BpPUMPfaQ/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-all text-gray-400">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-facebook"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+               </a>
+               
+               {/* 2. TikTok */}
+               <a href="https://www.tiktok.com/@hypercommerce_2025?_r=1&_t=ZS-9377u8D20Bh" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white hover:text-black transition-all text-gray-400">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+               </a>
+
+               {/* 3. X (Twitter) */}
+               <a href="https://x.com/hypercommerce_?s=21" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-black hover:border hover:border-white transition-all text-gray-400">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+               </a>
+             </div>
           </div>
           <div><h4 className="font-bold text-white mb-4">Platform</h4><ul className="space-y-2 text-sm text-gray-500"><li><a href="#" className="hover:text-primary">Best Sellers</a></li><li><a href="#" className="hover:text-primary">New Arrivals</a></li><li><a href="#" className="hover:text-primary">OEM/ODM Service</a></li></ul></div>
           <div><h4 className="font-bold text-white mb-4">Legal</h4><ul className="space-y-2 text-sm text-gray-500"><li><a href="#" className="hover:text-primary">Privacy Policy</a></li><li><a href="#" className="hover:text-primary">Terms of Service</a></li></ul></div>
@@ -450,4 +460,3 @@ export default function Home() {
     </div>
   );
 }
-// 이메일 설정 적용을 위한 재배포
