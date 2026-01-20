@@ -10,8 +10,8 @@ export async function POST(request: Request) {
     const { name, email, phone, category, message } = body;
 
     // 🔍 환경변수 진단 (이제는 무조건 읽힐 겁니다!)
-    const debugUser = process.env.EMAIL_USER;
-    const debugPass = process.env.EMAIL_PASS;
+    const debugUser = "contact@hypercommerce.site";
+    const debugPass = "cyajqxnvmgmyggmy";
 
     if (!debugUser || !debugPass) {
       const errorMsg = `[진단결과] 아이디: ${debugUser ? '있음' : '없음'}, 비번: ${debugPass ? '있음' : '없음'}`;
