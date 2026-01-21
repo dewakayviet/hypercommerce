@@ -4,6 +4,14 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2, Quote } from "lucide-react";
 
+// ⭐⭐⭐ [여기!] 이 부분을 추가하면 에러가 100% 사라집니다 ⭐⭐⭐
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void;
+  }
+}
+// ⭐⭐⭐ -------------------------------------------------- ⭐⭐⭐
+
 // 1. 트렌드 데이터
 const TRENDS_DATA = [
   { 
