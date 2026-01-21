@@ -4,13 +4,12 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, ArrowRight, ChevronLeft, ChevronRight, Star, User, Loader2, Quote } from "lucide-react";
 
-// ⭐⭐⭐ [여기!] 이 부분을 추가하면 에러가 100% 사라집니다 ⭐⭐⭐
+// ⭐ [에러 해결] 컴퓨터에게 "gtag는 원래 있는 거야"라고 알려주는 코드
 declare global {
   interface Window {
     gtag: (...args: any[]) => void;
   }
 }
-// ⭐⭐⭐ -------------------------------------------------- ⭐⭐⭐
 
 // 1. 트렌드 데이터
 const TRENDS_DATA = [
@@ -196,6 +195,7 @@ export default function Home() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // 👇 여기가 구글 광고 추적 핵심 부분!
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -210,28 +210,22 @@ export default function Home() {
       const result = await res.json();
 
       if (res.ok) {
-        // 1. 성공 상태로 변경
         setSubmitStatus('success');
 
-        // ⭐⭐⭐ [구글 광고 전환 추적 코드] ⭐⭐⭐
-        // 성공했을 때만 실행됩니다.
+        // ⭐⭐⭐ [구글 광고 전환 추적] ⭐⭐⭐
+        // 아까 스크린샷에 나온 'r-fuCMCpw-kbEIQtLtNc' 코드를 여기에 쏙!
         if (typeof window !== 'undefined' && window.gtag) {
           window.gtag('event', 'conversion', {
-              // ⚠️ 나중에 구글 광고 관리자에서 '전환 라벨'을 확인해서
-              // 'AW-17892215178/여기에_라벨값_입력' 형태로 바꿔주시면 더 정확합니다.
-              'send_to': 'AW-17892215178', 
-              'value': 1.0,
-              'currency': 'KRW'
+             'send_to': 'AW-17892215178/r-fuCMCpw-kbEIQtLtNc', // ✅ 진짜 비밀번호 적용됨!
+             'value': 1.0,
+             'currency': 'KRW'
           });
         }
         // ⭐⭐⭐ ----------------------------- ⭐⭐⭐
 
-        // 2. 폼 초기화 및 모달 닫기
         setFormData({ name: '', email: '', phone: '', category: 'Distribution (유통)', message: '' });
         setTimeout(() => { setIsModalOpen(false); setSubmitStatus('idle'); }, 3000);
-
       } else {
-        // 실패 시 에러 메시지
         alert(`전송 실패 원인: ${result.error || "알 수 없는 오류"}`);
       }
     } catch (error) {
@@ -261,17 +255,14 @@ export default function Home() {
           </nav>
 
           <div className="hidden md:flex items-center gap-6">
-            {/* ⭐ 상단 소셜 아이콘 추가됨 (구분선과 함께 배치) */}
+            {/* 상단 소셜 아이콘 */}
             <div className="flex items-center gap-4 border-r border-white/10 pr-6 mr-2">
-               {/* FB */}
                <a href="https://www.facebook.com/share/1BpPUMPfaQ/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#1877F2] transition-colors">
                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                </a>
-               {/* TikTok */}
                <a href="https://www.tiktok.com/@hypercommerce_2025?_r=1&_t=ZS-9377u8D20Bh" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
                </a>
-               {/* X */}
                <a href="https://x.com/hypercommerce_?s=21" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                </a>
@@ -299,14 +290,13 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 모바일 메뉴 (SNS 추가) */}
+      {/* 모바일 메뉴 */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-black/95 flex flex-col items-center justify-center gap-8 md:hidden backdrop-blur-xl">
           <button onClick={() => scrollToSection('trends')} className="text-3xl font-bold text-white hover:text-primary uppercase">TRENDS</button>
           <button onClick={() => scrollToSection('why-us')} className="text-3xl font-bold text-white hover:text-primary uppercase">WHY US</button>
           <button onClick={() => scrollToSection('success-story')} className="text-3xl font-bold text-white hover:text-primary uppercase">SUCCESS STORIES</button>
           
-          {/* 모바일 메뉴용 SNS 아이콘 */}
           <div className="flex gap-6 mt-4 mb-4">
              <a href="https://www.facebook.com/share/1BpPUMPfaQ/?mibextid=wwXIfr" className="text-gray-400 hover:text-[#1877F2]"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
              <a href="https://www.tiktok.com/@hypercommerce_2025?_r=1&_t=ZS-9377u8D20Bh" className="text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg></a>
@@ -487,7 +477,7 @@ export default function Home() {
              <div className="flex items-center gap-2 justify-center md:justify-start mb-4"><Image src="/images/logo.png" alt="HYPER COMMERCE" width={150} height={45} className="object-contain" /></div>
              <p className="text-gray-500 text-sm max-w-sm mx-auto md:mx-0 mb-6">Seoul, Korea | Ho Chi Minh, Vietnam<br/>contact@hypercommerce.site</p>
              
-             {/* 하단에도 아이콘 유지 (노출 극대화) */}
+             {/* 하단 소셜 아이콘 */}
              <div className="flex items-center justify-center md:justify-start gap-4">
                <a href="https://www.facebook.com/share/1BpPUMPfaQ/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-all text-gray-400">
                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
