@@ -202,10 +202,28 @@ export default function Home() {
       const result = await res.json();
 
       if (res.ok) {
+        // 1. 성공 상태로 변경
         setSubmitStatus('success');
+
+        // ⭐⭐⭐ [구글 광고 전환 추적 코드] ⭐⭐⭐
+        // 성공했을 때만 실행됩니다.
+        if (typeof window !== 'undefined' && window.gtag) {
+          window.gtag('event', 'conversion', {
+              // ⚠️ 나중에 구글 광고 관리자에서 '전환 라벨'을 확인해서
+              // 'AW-17892215178/여기에_라벨값_입력' 형태로 바꿔주시면 더 정확합니다.
+              'send_to': 'AW-17892215178', 
+              'value': 1.0,
+              'currency': 'KRW'
+          });
+        }
+        // ⭐⭐⭐ ----------------------------- ⭐⭐⭐
+
+        // 2. 폼 초기화 및 모달 닫기
         setFormData({ name: '', email: '', phone: '', category: 'Distribution (유통)', message: '' });
         setTimeout(() => { setIsModalOpen(false); setSubmitStatus('idle'); }, 3000);
+
       } else {
+        // 실패 시 에러 메시지
         alert(`전송 실패 원인: ${result.error || "알 수 없는 오류"}`);
       }
     } catch (error) {
