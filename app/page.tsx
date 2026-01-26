@@ -195,7 +195,7 @@ export default function Home() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // 👇 여기가 구글 광고 추적 핵심 부분!
+  // 👇 구글 광고 추적 및 이메일 전송
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -213,10 +213,9 @@ export default function Home() {
         setSubmitStatus('success');
 
         // ⭐⭐⭐ [구글 광고 전환 추적] ⭐⭐⭐
-        // 아까 스크린샷에 나온 'r-fuCMCpw-kbEIQtLtNc' 코드를 여기에 쏙!
         if (typeof window !== 'undefined' && window.gtag) {
           window.gtag('event', 'conversion', {
-             'send_to': 'AW-17892215178/r-fuCMCpw-kbEIQtLtNc', // ✅ 진짜 비밀번호 적용됨!
+             'send_to': 'AW-17892215178/r-fuCMCpw-kbEIQtLtNc', // ✅ 구글 광고 전환 라벨
              'value': 1.0,
              'currency': 'KRW'
           });
@@ -307,17 +306,35 @@ export default function Home() {
         </div>
       )}
 
-      {/* 히어로 섹션 */}
-      <section className="relative pt-32 pb-10 md:pt-48 md:pb-20 px-6 flex flex-col items-center text-center overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
-        <div className="relative z-10 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-primary text-sm font-medium mb-6 animate-fade-in-up">
+      {/* ⭐ 텍스처 영상 배경이 적용된 히어로 섹션 ⭐ */}
+      <section className="relative pt-32 pb-10 md:pt-48 md:pb-20 px-6 flex flex-col items-center text-center overflow-hidden h-screen max-h-[1080px] justify-center">
+        {/* ⭐ 1. 백그라운드 영상 (hero-texture.mp4) */}
+        <div className="absolute inset-0 w-full h-full">
+           <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover">
+             <source src="/videos/hero-texture.mp4" type="video/mp4" />
+           </video>
+           {/* ⭐ 2. 검은색 반투명 필터 (글씨 잘 보이게) */}
+           <div className="absolute inset-0 bg-black/60 z-0"></div>
+        </div>
+
+        <div className="relative z-10 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-primary text-sm font-medium mb-6 animate-fade-in-up backdrop-blur-md">
           <Star className="w-3 h-3 fill-current" /> No.1 K-Beauty B2B Platform
         </div>
-        <h1 className="relative z-10 text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 bg-gradient-to-b from-white to-white/50 bg-clip-text text-transparent max-w-5xl mx-auto leading-[1.1]">Create Your Signature Brand</h1>
-        <p className="relative z-10 text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">From product planning to production and export. We provide a one-stop solution for your K-Beauty business.</p>
+        
+        {/* 메인 카피 */}
+        <h1 className="relative z-10 text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-6 text-white max-w-6xl mx-auto leading-[1.1] drop-shadow-2xl">
+          Skincare, Makeup, Body.<br/>We Produce Everything.
+        </h1>
+        
+        {/* 서브 카피 */}
+        <p className="relative z-10 text-gray-200 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed drop-shadow-md">
+          Create your brand at the world-class factory that makes the best K-Beauty brands.<br className="hidden md:block"/>
+          Direct manufacturing without middlemen.
+        </p>
+
         <div className="relative z-10 flex flex-col sm:flex-row gap-4 w-full justify-center">
-           <button onClick={() => setIsModalOpen(true)} className="bg-primary hover:bg-primary/90 text-black px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(204,253,50,0.3)]">Start Free Consultation <ArrowRight className="w-5 h-5" /></button>
-           <button onClick={() => scrollToSection('success-story')} className="px-8 py-4 rounded-full font-bold text-lg text-white border border-white/20 hover:bg-white/10 transition-all">View Success Stories</button>
+           <button onClick={() => setIsModalOpen(true)} className="bg-primary hover:bg-primary/90 text-black px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(204,253,50,0.4)]">Start Free Consultation <ArrowRight className="w-5 h-5" /></button>
+           <button onClick={() => scrollToSection('success-story')} className="px-8 py-4 rounded-full font-bold text-lg text-white border border-white/30 hover:bg-white/10 transition-all backdrop-blur-sm">View Success Stories</button>
         </div>
       </section>
 
